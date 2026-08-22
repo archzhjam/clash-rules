@@ -129,6 +129,15 @@ function buildGroups(nodeNames) {
   return lines.join('\n');
 }
 
+/** 内联规则：策略插到 no-resolve 之前（clash 语法要求 no-resolve 在最后） */
+function inlineRule(rule, policy, keepNoResolve = true) {
+  if (rule.endsWith(',no-resolve')) {
+    const base = rule.slice(0, -',no-resolve'.length);
+    return keepNoResolve ? `${base},${policy},no-resolve` : `${base},${policy}`;
+  }
+  return `${rule},${policy}`;
+}
+
 function buildClash(nodes, names, rules) {
   const L = [];
   L.push('mixed-port: 7890');
@@ -154,8 +163,8 @@ function buildClash(nodes, names, rules) {
   L.push('proxy-groups:');
   L.push(buildGroups(names));
   L.push('rules:');
-  for (const [key, policy] of RULE_ORDER) for (const r of rules[key]) L.push(`  - ${r},${policy}`);
-  for (const r of rules.process || []) L.push(`  - ${r},🎯 Direct`);
+  for (const [key, policy] of RULE_ORDER) for (const r of rules[key]) L.push(`  - ${inlineRule(r, policy)}`);
+  for (const r of rules.process || []) L.push(`  - ${inlineRule(r, '🎯 Direct')}`);
   L.push('  - GEOIP,CN,🎯 Direct');
   L.push('  - GEOSITE,CN,🎯 Direct');
   L.push('  - MATCH,🐟 漏网之鱼');
@@ -190,7 +199,7 @@ function buildShadowrocket(nodeObjs, nodeNames, rules) {
   L.push('🐟 漏网之鱼 = select, 🚀 节点选择, 🎯 Direct');
   L.push('');
   L.push('[Rule]');
-  for (const [key, policy] of RULE_ORDER) for (const r of rules[key]) L.push(`${r},${policy}`);
+  for (const [key, policy] of RULE_ORDER) for (const r of rules[key]) L.push(inlineRule(r, policy, false));
   L.push('GEOIP,CN,🎯 Direct');
   L.push('FINAL,🐟 漏网之鱼');
   return L.join('\n') + '\n';
