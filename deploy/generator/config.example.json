@@ -1,0 +1,9 @@
+{
+  "airportUrl": "https://你的机场订阅地址",
+  "rulesRepo": "archzhjam/clash-rules",
+  "branch": "main",
+  "outputDir": "./output",
+  "listenPort": 8080,
+  "pushRepo": "git@github.com:archzhjam/clash-configs.git",
+  "pushBranch": "main"
+}

@@ -1,0 +1,13 @@
+services:
+  subgen:
+    build: .
+    container_name: clash-subgen
+    restart: always
+    ports:
+      - "8080:8080"            # 局域网客户端拉取（http://NAS_IP:8080/clash.yaml）
+    volumes:
+      - ./config.json:/app/config.json:ro   # 真实配置（含机场地址，勿入库）
+      - ./output:/app/output                 # 生成的配置
+      - /volume1/homes/你的用户/.ssh:/root/.ssh:ro   # SSH 密钥（git push 用，按实际路径改）
+    environment:
+      - GENERATE_INTERVAL=21600   # 重新生成间隔（秒，默认 6 小时）
