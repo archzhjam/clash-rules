@@ -1,0 +1,80 @@
+# Clash Verge Rev / OpenClash 共享规则引用模板
+# 用法：
+#   - Verge Rev：作为 Merge 配置合并到订阅（移除开头的 --- 与 comments 按需保留）
+#   - OpenClash：覆写 → 自定义规则，粘贴 rule-providers 与 rules 段
+# 注意：策略组需在各端配置中同名定义（🛑 Block / 🎯 Direct / 🌍 主流媒体 /
+#       Ⓜ️ Microsoft / 📺 BiliBili / 🎥 Netflix / 🍎 Apple / 📲 Telegram / 🐟 漏网之鱼）
+
+rule-providers:
+  netflix:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/netflix.list"
+    path: ./rules/netflix.yaml
+    interval: 86400
+  direct:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/direct.list"
+    path: ./rules/direct.yaml
+    interval: 86400
+  microsoft:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/microsoft.list"
+    path: ./rules/microsoft.yaml
+    interval: 86400
+  apple:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/apple.list"
+    path: ./rules/apple.yaml
+    interval: 86400
+  telegram:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/telegram.list"
+    path: ./rules/telegram.yaml
+    interval: 86400
+  bilibili:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/bilibili.list"
+    path: ./rules/bilibili.yaml
+    interval: 86400
+  media:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/media.list"
+    path: ./rules/media.yaml
+    interval: 86400
+  block:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/block.list"
+    path: ./rules/block.yaml
+    interval: 86400
+  # 仅 Windows/macOS 桌面端：进程级规则
+  process:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/process.list"
+    path: ./rules/process.yaml
+    interval: 86400
+
+rules:
+  # 顺序与原文件一致（优先级由前到后）
+  - RULE-SET,netflix,🎥 Netflix
+  - RULE-SET,direct,🎯 Direct
+  - RULE-SET,microsoft,Ⓜ️ Microsoft
+  - RULE-SET,apple,🍎 Apple
+  - RULE-SET,telegram,📲 Telegram
+  - RULE-SET,bilibili,📺 BiliBili
+  - RULE-SET,media,🌍 主流媒体
+  - RULE-SET,block,🛑 Block
+  # 基础规则
+  - GEOIP,CN,🎯 Direct
+  - GEOSITE,CN,🎯 Direct
+  - MATCH,🐟 漏网之鱼
+  # ↓↓↓ 桌面端追加（Windows/macOS 才加，OpenClash/Shadowrocket 不加）↓↓↓
+  # - RULE-SET,process,🎯 Direct

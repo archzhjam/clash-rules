@@ -1,0 +1,16 @@
+PROCESS-NAME,DownloadService
+PROCESS-NAME,Folx
+PROCESS-NAME,Motrix
+PROCESS-NAME,NetTransport
+PROCESS-NAME,Thunder
+PROCESS-NAME,Transmission
+PROCESS-NAME,WebTorrent Helper
+PROCESS-NAME,WebTorrent
+PROCESS-NAME,Weiyun
+PROCESS-NAME,aria2c
+PROCESS-NAME,fdm
+PROCESS-NAME,qbittorrent
+PROCESS-NAME,uTorrent
+PROCESS-NAME,baidunetdisk
+PROCESS-NAME,OneDrive
+PROCESS-NAME,OneDriveUpdater
