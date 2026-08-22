@@ -9,56 +9,56 @@ rule-providers:
   netflix:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/netflix.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/netflix.list"
     path: ./rules/netflix.yaml
     interval: 86400
   direct:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/direct.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/direct.list"
     path: ./rules/direct.yaml
     interval: 86400
   microsoft:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/microsoft.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/microsoft.list"
     path: ./rules/microsoft.yaml
     interval: 86400
   apple:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/apple.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/apple.list"
     path: ./rules/apple.yaml
     interval: 86400
   telegram:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/telegram.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/telegram.list"
     path: ./rules/telegram.yaml
     interval: 86400
   bilibili:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/bilibili.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/bilibili.list"
     path: ./rules/bilibili.yaml
     interval: 86400
   media:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/media.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/media.list"
     path: ./rules/media.yaml
     interval: 86400
   block:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/block.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/block.list"
     path: ./rules/block.yaml
     interval: 86400
   # 仅 Windows/macOS 桌面端：进程级规则
   process:
     type: http
     behavior: classical
-    url: "https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/process.list"
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/process.list"
     path: ./rules/process.yaml
     interval: 86400
 

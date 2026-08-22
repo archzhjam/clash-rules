@@ -59,14 +59,14 @@ clash-rules/
 
 - 设置 → 规则 → **添加规则集**，逐个填入以下 URL（raw 链接，替换为你的仓库地址）：
   ```
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/netflix.list
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/direct.list
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/microsoft.list
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/apple.list
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/telegram.list
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/bilibili.list
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/media.list
-  https://raw.githubusercontent.com/<你的账号>/clash-rules/main/rules/block.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/netflix.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/direct.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/microsoft.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/apple.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/telegram.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/bilibili.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/media.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/block.list
   ```
 - **不添加 process.list**；基础规则里的 GEOSITE 行删除（用 GEOIP,CN 即可）；
 - 每个规则集指定对应策略（Block→🛑 Block 等），Shadowrocket 的规则集支持按顺序匹配。
@@ -75,7 +75,7 @@ clash-rules/
 
 - 规则集更新后，各端自动拉取：Verge Rev（规则集默认每天更新）、OpenClash（规则集缓存 + 定时）、Shadowrocket（规则集间隔更新）；
 - 国内访问 raw.githubusercontent.com 可能慢/被墙 → 建议用 **jsDelivr CDN** 前缀：
-  `https://cdn.jsdelivr.net/gh/<你的账号>/clash-rules@main/rules/xxx.list`
+  `https://cdn.jsdelivr.net/gh/archzhjam/clash-rules@main/rules/xxx.list`
   或在 GitHub 仓库开启 Actions 自动发布到 Releases。
 
 ## 维护
