@@ -214,7 +214,7 @@ function buildClash(nodes, names, hkNames, geminiNames, rules) {
   return L.join('\n') + '\n';
 }
 
-function buildShadowrocket(v2nodes, hkNames, geminiNames, rules) {
+function buildShadowrocket(v2nodes, rules) {
   const v2names = v2nodes.map((n) => n.name);
   const L = [];
   L.push('[General]');
@@ -226,15 +226,13 @@ function buildShadowrocket(v2nodes, hkNames, geminiNames, rules) {
   L.push('[Proxy Group]');
   const sel = (name, members) => `${name} = select, ${members.join(', ')}`;
   const ut = (name, members) => `${name} = url-test, ${members.join(', ')}, url=${TEST_URL}, interval=300`;
-  const hk = filterNames(v2names, FILTERS.nodeSelect);
-  const gem = filterNames(v2names, FILTERS.netflix);
-  L.push(ut('🚀 节点选择', hk.length ? hk : v2names));
+  L.push(ut('🚀 节点选择', v2names));
   L.push(sel('🎯 Direct', ['DIRECT']));
   L.push(sel('🛑 Block', ['REJECT']));
-  L.push(ut('🌍 主流媒体', hk.length ? hk : v2names));
+  L.push(ut('🌍 主流媒体', v2names));
   L.push(sel('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
-  L.push(ut('🎥 Netflix', gem.length ? gem : v2names));
+  L.push(ut('🎥 Netflix', v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
@@ -278,14 +276,16 @@ async function main() {
   const geminiNames = filterNames(names, FILTERS.netflix);
   console.log(`      香港节点: ${hkNames.length} | Gemini节点: ${geminiNames.length}`);
   console.log('[1b/4] 拉取 v2ray URI 订阅（Shadowrocket 原生格式）...');
-  const v2nodes = await fetchV2rayNodes();
-  console.log(`      v2ray URI: ${v2nodes.length} 条`);
+  let v2nodes = await fetchV2rayNodes();
+  const srFilter = CFG.shadowrocketNodeFilter;
+  if (srFilter) v2nodes = v2nodes.filter((n) => n.name.includes(srFilter));
+  console.log(`      v2ray URI: ${v2nodes.length} 条（shadowrocket 过滤: ${srFilter || '无'}）`);
   console.log('[2/4] 拉取 clash-rules 规则集...');
   const rules = await fetchRules();
   console.log(`      规则数: ${RULE_ORDER.reduce((s, [k]) => s + rules[k].length, 0) + (rules.process || []).length}`);
   console.log('[3/4] 生成配置...');
   writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, geminiNames, rules), 'utf8');
-  writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(v2nodes, hkNames, geminiNames, rules), 'utf8');
+  writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(v2nodes, rules), 'utf8');
   console.log('[4/4] 完成：');
   for (const f of readdirSync(OUT)) {
     const fp = path.join(OUT, f);
