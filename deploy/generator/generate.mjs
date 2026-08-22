@@ -225,14 +225,13 @@ function buildShadowrocket(v2nodes, rules) {
   L.push('');
   L.push('[Proxy Group]');
   const sel = (name, members) => `${name} = select, ${members.join(', ')}`;
-  const ut = (name, members) => `${name} = url-test, ${members.join(', ')}, url=${TEST_URL}, interval=300`;
-  L.push(ut('🚀 节点选择', v2names));
+  L.push(sel('🚀 节点选择', v2names));
   L.push(sel('🎯 Direct', ['DIRECT']));
   L.push(sel('🛑 Block', ['REJECT']));
-  L.push(ut('🌍 主流媒体', v2names));
+  L.push(sel('🌍 主流媒体', v2names));
   L.push(sel('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
-  L.push(ut('🎥 Netflix', v2names));
+  L.push(sel('🎥 Netflix', v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
