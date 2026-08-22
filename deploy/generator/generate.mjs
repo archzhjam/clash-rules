@@ -146,6 +146,22 @@ function filterNames(names, keyword) {
   return names.filter((n) => n.includes(keyword));
 }
 
+/** 拉取 v2ray 原生 URI 订阅（Shadowrocket 官方格式），并按名称剔除节点 */
+async function fetchV2rayNodes() {
+  const url = CFG.v2rayUrl || (CFG.airportUrl + '/v2ray');
+  const txt = await fetchText(url);
+  const lines = txt.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
+  const kept = [];
+  for (const line of lines) {
+    const frag = line.split('#')[1] || '';
+    let name = '';
+    try { name = decodeURIComponent(frag); } catch { name = frag; }
+    if (EXCLUDE.some((e) => name.includes(e))) continue;
+    kept.push({ line, name });
+  }
+  return kept;
+}
+
 /** 输出 YAML 策略组定义 */
 function buildGroups(names, hkNames, geminiNames) {
   const select = (name, members) => `  - name: ${name}\n    type: select\n    proxies: [${members.join(', ')}]`;
@@ -198,35 +214,27 @@ function buildClash(nodes, names, hkNames, geminiNames, rules) {
   return L.join('\n') + '\n';
 }
 
-function buildShadowrocket(nodeObjs, names, hkNames, geminiNames, rules) {
+function buildShadowrocket(v2nodes, hkNames, geminiNames, rules) {
+  const v2names = v2nodes.map((n) => n.name);
   const L = [];
   L.push('[General]');
   L.push('dns-server = 223.5.5.5, 119.29.29.29');
   L.push('');
   L.push('[Proxy]');
-  for (const n of nodeObjs) {
-    if (n.type !== 'vless') continue;
-    const parts = [`${n.name} = vless, ${n.server}, ${n.port}`];
-    if (n.uuid) parts.push(`username=${n.uuid}`);
-    if (n.flow) parts.push(`flow=${n.flow}`);
-    if (n.reality && n.reality['public-key']) parts.push(`reality-public-key=${n.reality['public-key']}`);
-    if (n.reality && n.reality['short-id']) parts.push(`reality-short-id=${n.reality['short-id']}`);
-    if (n.tls === 'true') parts.push('tls=true');
-    if (n.servername) parts.push(`servername=${n.servername}`);
-    if (n.udp === 'true') parts.push('udp=true');
-    L.push(parts.join(', '));
-  }
+  for (const n of v2nodes) L.push(n.line);
   L.push('');
   L.push('[Proxy Group]');
   const sel = (name, members) => `${name} = select, ${members.join(', ')}`;
   const ut = (name, members) => `${name} = url-test, ${members.join(', ')}, url=${TEST_URL}, interval=300`;
-  L.push(ut('🚀 节点选择', hkNames.length ? hkNames : names));
+  const hk = filterNames(v2names, FILTERS.nodeSelect);
+  const gem = filterNames(v2names, FILTERS.netflix);
+  L.push(ut('🚀 节点选择', hk.length ? hk : v2names));
   L.push(sel('🎯 Direct', ['DIRECT']));
   L.push(sel('🛑 Block', ['REJECT']));
-  L.push(ut('🌍 主流媒体', hkNames.length ? hkNames : names));
+  L.push(ut('🌍 主流媒体', hk.length ? hk : v2names));
   L.push(sel('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
-  L.push(ut('🎥 Netflix', geminiNames.length ? geminiNames : names));
+  L.push(ut('🎥 Netflix', gem.length ? gem : v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
@@ -265,17 +273,19 @@ async function main() {
   mkdirSync(OUT, { recursive: true });
   console.log('[1/4] 拉取机场订阅节点...');
   const { block, names } = await fetchNodes();
-  const nodeObjs = parseNodes(block);
   console.log(`      节点数: ${names.length}（剔除: ${EXCLUDE.join(', ') || '无'}）`);
   const hkNames = filterNames(names, FILTERS.nodeSelect);
   const geminiNames = filterNames(names, FILTERS.netflix);
   console.log(`      香港节点: ${hkNames.length} | Gemini节点: ${geminiNames.length}`);
+  console.log('[1b/4] 拉取 v2ray URI 订阅（Shadowrocket 原生格式）...');
+  const v2nodes = await fetchV2rayNodes();
+  console.log(`      v2ray URI: ${v2nodes.length} 条`);
   console.log('[2/4] 拉取 clash-rules 规则集...');
   const rules = await fetchRules();
   console.log(`      规则数: ${RULE_ORDER.reduce((s, [k]) => s + rules[k].length, 0) + (rules.process || []).length}`);
   console.log('[3/4] 生成配置...');
   writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, geminiNames, rules), 'utf8');
-  writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(nodeObjs, names, hkNames, geminiNames, rules), 'utf8');
+  writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(v2nodes, hkNames, geminiNames, rules), 'utf8');
   console.log('[4/4] 完成：');
   for (const f of readdirSync(OUT)) {
     const fp = path.join(OUT, f);
