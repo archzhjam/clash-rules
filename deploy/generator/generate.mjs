@@ -8,7 +8,7 @@
  *   node generate.mjs --serve             # 生成并启动 HTTP 服务（局域网客户端拉取）
  * 配置: 同目录 config.json（机场地址等，不入库）
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -232,7 +232,10 @@ async function main() {
   const nodeObjs = parseNodes(block);
   writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(nodeObjs, names, rules), 'utf8');
   console.log('[4/4] 完成：');
-  for (const f of readdirSync(OUT)) console.log('      ' + f, (readFileSync(path.join(OUT, f)).length / 1024).toFixed(1) + 'KB');
+  for (const f of readdirSync(OUT)) {
+    const fp = path.join(OUT, f);
+    try { if (statSync(fp).isFile()) console.log('      ' + f, (readFileSync(fp).length / 1024).toFixed(1) + 'KB'); } catch { /* 跳过目录等异常项 */ }
+  }
   if (SERVE) startServer();
 }
 
