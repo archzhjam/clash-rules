@@ -80,7 +80,7 @@ rules:
   - RULE-SET,netflix,🎥 Netflix
   - RULE-SET,llm,🤖 大模型
   - RULE-SET,direct,🎯 Direct
-  - RULE-SET,microsoft,Ⓜ️ Microsoft
+  - RULE-SET,microsoft,🎯 Direct
   - RULE-SET,apple,🍎 Apple
   - RULE-SET,telegram,📲 Telegram
   - RULE-SET,bilibili,📺 BiliBili

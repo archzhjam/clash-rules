@@ -12,7 +12,7 @@ clash-rules/
 │   ├── netflix.list           # 🎥 Netflix（33 条）
 │   ├── llm.list               # 🤖 大模型（12 条，openai/chatgpt/gemini 等）
 │   ├── direct.list            # 🎯 Direct（266 条）
-│   ├── microsoft.list         # Ⓜ️ Microsoft（79 条）
+│   ├── microsoft.list         # Ⓜ️ Microsoft（79 条，直连 🎯 Direct）
 │   ├── apple.list             # 🍎 Apple（29 条）
 │   ├── telegram.list          # 📲 Telegram（13 条）
 │   ├── bilibili.list          # 📺 BiliBili（37 条）

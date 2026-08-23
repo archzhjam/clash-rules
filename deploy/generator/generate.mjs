@@ -35,7 +35,7 @@ const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
   ['llm', '🤖 大模型'],
   ['direct', '🎯 Direct'],
-  ['microsoft', 'Ⓜ️ Microsoft'],
+  ['microsoft', '🎯 Direct'],
   ['apple', '🍎 Apple'],
   ['telegram', '📲 Telegram'],
   ['bilibili', '📺 BiliBili'],
@@ -185,7 +185,7 @@ function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiName
   L.push(select('🎯 Direct', ['DIRECT']));
   L.push(select('🛑 Block', ['REJECT']));
   L.push(urlTest('🌍 主流媒体', hkNames.length ? hkNames : names));
-  L.push(select('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
+  L.push(select('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
   L.push(select('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
@@ -248,7 +248,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push(sel('🎯 Direct', ['DIRECT']));
   L.push(sel('🛑 Block', ['REJECT']));
   L.push(sel('🌍 主流媒体', v2names));
-  L.push(sel('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
+  L.push(sel('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
   L.push(sel('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
