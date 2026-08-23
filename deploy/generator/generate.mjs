@@ -226,6 +226,9 @@ function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGemi
   L.push('    - 119.29.29.29');
   L.push('    - https://dns.alidns.com/dns-query');
   L.push('    - https://doh.pub/dns-query');
+  L.push('  proxy-server-nameserver:');
+  L.push('    - 223.5.5.5');
+  L.push('    - 119.29.29.29');
   L.push('proxies:');
   L.push(nodes);
   L.push('proxy-groups:');
