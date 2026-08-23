@@ -66,7 +66,12 @@ async function fetchRules() {
     if (text == null) text = await fetchText(raw + name + '.list');
     out[name] = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
   }
-  try { out.process = (await fetchText(raw + 'process.list')).split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith('#')); }
+  try {
+    let text = null;
+    try { text = await fetchText(cdn + 'process.list'); } catch { /* 尝试 raw */ }
+    if (text == null) text = await fetchText(raw + 'process.list');
+    out.process = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
+  }
   catch { out.process = []; }
   return out;
 }
