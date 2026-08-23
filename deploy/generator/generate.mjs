@@ -202,7 +202,7 @@ function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGemi
   L.push('allow-lan: true');
   L.push('mode: Rule');
   L.push('log-level: info');
-  L.push('ipv6: true');
+  L.push('ipv6: false');
   L.push('external-controller: 127.0.0.1:9090');
   L.push('dns:');
   L.push('  enable: true');
@@ -224,6 +224,8 @@ function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGemi
   L.push('  nameserver:');
   L.push('    - 223.5.5.5');
   L.push('    - 119.29.29.29');
+  L.push('    - https://dns.alidns.com/dns-query');
+  L.push('    - https://doh.pub/dns-query');
   L.push('proxies:');
   L.push(nodes);
   L.push('proxy-groups:');
