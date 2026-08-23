@@ -39,6 +39,7 @@ const RULE_ORDER = [
   ['telegram', '📲 Telegram'],
   ['bilibili', '📺 BiliBili'],
   ['media', '🌍 主流媒体'],
+  ['tiktok', 'tiktok'],
   ['block', '🛑 Block'],
 ];
 
@@ -177,6 +178,7 @@ function buildGroups(names, hkNames, geminiNames) {
   L.push(urlTest('🎥 Netflix', geminiNames.length ? geminiNames : names));
   L.push(select('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(select('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
+  L.push(select('tiktok', ['🚀 节点选择', '🎯 Direct']));
   L.push(select('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   return L.join('\n');
 }
@@ -234,6 +236,7 @@ function buildShadowrocket(v2nodes, rules) {
   L.push(sel('🎥 Netflix', v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
+  L.push(sel('tiktok', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   L.push('');
   L.push('[Rule]');

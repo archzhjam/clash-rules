@@ -3,7 +3,8 @@
 #   - Verge Rev：作为 Merge 配置合并到订阅（移除开头的 --- 与 comments 按需保留）
 #   - OpenClash：覆写 → 自定义规则，粘贴 rule-providers 与 rules 段
 # 注意：策略组需在各端配置中同名定义（🛑 Block / 🎯 Direct / 🌍 主流媒体 /
-#       Ⓜ️ Microsoft / 📺 BiliBili / 🎥 Netflix / 🍎 Apple / 📲 Telegram / 🐟 漏网之鱼）
+#       Ⓜ️ Microsoft / 📺 BiliBili / 🎥 Netflix / 🍎 Apple / 📲 Telegram /
+#       tiktok / 🐟 漏网之鱼）
 
 rule-providers:
   netflix:
@@ -48,6 +49,12 @@ rule-providers:
     url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/media.list"
     path: ./rules/media.yaml
     interval: 86400
+  tiktok:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/tiktok.list"
+    path: ./rules/tiktok.yaml
+    interval: 86400
   block:
     type: http
     behavior: classical
@@ -71,6 +78,7 @@ rules:
   - RULE-SET,telegram,📲 Telegram
   - RULE-SET,bilibili,📺 BiliBili
   - RULE-SET,media,🌍 主流媒体
+  - RULE-SET,tiktok,tiktok
   - RULE-SET,block,🛑 Block
   # 基础规则
   - GEOIP,CN,🎯 Direct

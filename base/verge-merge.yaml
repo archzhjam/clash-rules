@@ -12,6 +12,7 @@ prepend-rules:
   - RULE-SET,telegram,📲 Telegram
   - RULE-SET,bilibili,📺 BiliBili
   - RULE-SET,media,🌍 主流媒体
+  - RULE-SET,tiktok,tiktok
   - RULE-SET,block,🛑 Block
   - GEOIP,CN,🎯 Direct
   - GEOSITE,CN,🎯 Direct
@@ -26,5 +27,6 @@ prepend-rule-providers:
   telegram: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/telegram.list", path: ./rules/telegram.yaml, interval: 86400}
   bilibili: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/bilibili.list", path: ./rules/bilibili.yaml, interval: 86400}
   media: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/media.list", path: ./rules/media.yaml, interval: 86400}
+  tiktok: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/tiktok.list", path: ./rules/tiktok.yaml, interval: 86400}
   block: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/block.list", path: ./rules/block.yaml, interval: 86400}
   process: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/process.list", path: ./rules/process.yaml, interval: 86400}
