@@ -219,7 +219,7 @@ function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGemi
   L.push('proxies:');
   L.push(nodes);
   L.push('proxy-groups:');
-  L.push(buildGroups(names, hkNames, geminiNames));
+  L.push(buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames));
   L.push('rules:');
   for (const [key, policy] of RULE_ORDER) for (const r of rules[key]) L.push(`  - ${inlineRule(r, policy)}`);
   for (const r of rules.process || []) L.push(`  - ${inlineRule(r, '🎯 Direct')}`);
