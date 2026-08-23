@@ -15,7 +15,7 @@ clash-rules/
 │   ├── microsoft.list         # Ⓜ️ Microsoft（79 条，直连 🎯 Direct）
 │   ├── apple.list             # 🍎 Apple（29 条）
 │   ├── telegram.list          # 📲 Telegram（13 条）
-│   ├── bilibili.list          # 📺 BiliBili（37 条）
+│   ├── bilibili.list          # 📺 BiliBili（37 条，直连 🎯 Direct）
 │   ├── media.list             # 🌍 主流媒体（132 条）
 │   ├── tiktok.list            # 🎵 tiktok（1 条，DOMAIN-KEYWORD）
 │   ├── block.list             # 🛑 Block（412 条）

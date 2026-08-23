@@ -38,7 +38,7 @@ const RULE_ORDER = [
   ['microsoft', '🎯 Direct'],
   ['apple', '🍎 Apple'],
   ['telegram', '📲 Telegram'],
-  ['bilibili', '📺 BiliBili'],
+  ['bilibili', '🎯 Direct'],
   ['media', '🌍 主流媒体'],
   ['tiktok', '🎵 tiktok'],
   ['block', '🛑 Block'],
@@ -186,7 +186,7 @@ function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiName
   L.push(select('🛑 Block', ['REJECT']));
   L.push(urlTest('🌍 主流媒体', hkNames.length ? hkNames : names));
   L.push(select('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
-  L.push(select('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
+  L.push(select('📺 BiliBili', ['🎯 Direct', '🚀 节点选择']));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
   L.push(select('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
@@ -207,9 +207,17 @@ function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGemi
   L.push('dns:');
   L.push('  enable: true');
   L.push('  enhanced-mode: fake-ip');
+  L.push('  respect-rules: true');
   L.push('  fake-ip-filter:');
   L.push('    - "+.lan"');
   L.push('    - "+.local"');
+  L.push('    # Windows UWP / 微软商店：直连域名返回真实 IP，避免 UWP 应用不认假 IP');
+  L.push('    - "+.microsoft.com"');
+  L.push('    - "+.windowsupdate.com"');
+  L.push('    - "+.msftconnecttest.com"');
+  L.push('    - "+.msftncsi.com"');
+  L.push('    - "+.office.com"');
+  L.push('    - "+.live.com"');
   L.push('  default-nameserver:');
   L.push('    - 223.5.5.5');
   L.push('    - 119.29.29.29');
@@ -249,7 +257,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push(sel('🛑 Block', ['REJECT']));
   L.push(sel('🌍 主流媒体', v2names));
   L.push(sel('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
-  L.push(sel('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
+  L.push(sel('📺 BiliBili', ['🎯 Direct', '🚀 节点选择']));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));

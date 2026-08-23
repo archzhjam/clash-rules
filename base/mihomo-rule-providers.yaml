@@ -83,7 +83,7 @@ rules:
   - RULE-SET,microsoft,🎯 Direct
   - RULE-SET,apple,🍎 Apple
   - RULE-SET,telegram,📲 Telegram
-  - RULE-SET,bilibili,📺 BiliBili
+  - RULE-SET,bilibili,🎯 Direct
   - RULE-SET,media,🌍 主流媒体
   - RULE-SET,tiktok,🎵 tiktok
   - RULE-SET,block,🛑 Block
