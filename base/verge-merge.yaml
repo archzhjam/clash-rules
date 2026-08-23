@@ -6,14 +6,14 @@
 prepend-rules:
   # 共享规则集引用（顺序与原文件一致）
   - RULE-SET,netflix,🎥 Netflix
-  - RULE-SET,llm,大模型
+  - RULE-SET,llm,🤖 大模型
   - RULE-SET,direct,🎯 Direct
   - RULE-SET,microsoft,Ⓜ️ Microsoft
   - RULE-SET,apple,🍎 Apple
   - RULE-SET,telegram,📲 Telegram
   - RULE-SET,bilibili,📺 BiliBili
   - RULE-SET,media,🌍 主流媒体
-  - RULE-SET,tiktok,tiktok
+  - RULE-SET,tiktok,🎵 tiktok
   - RULE-SET,block,🛑 Block
   - GEOIP,CN,🎯 Direct
   - GEOSITE,CN,🎯 Direct

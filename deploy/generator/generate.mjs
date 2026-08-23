@@ -33,14 +33,14 @@ const TEST_URL = CFG.testUrl || 'http://www.gstatic.com/generate_204';
 
 const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
-  ['llm', '大模型'],
+  ['llm', '🤖 大模型'],
   ['direct', '🎯 Direct'],
   ['microsoft', 'Ⓜ️ Microsoft'],
   ['apple', '🍎 Apple'],
   ['telegram', '📲 Telegram'],
   ['bilibili', '📺 BiliBili'],
   ['media', '🌍 主流媒体'],
-  ['tiktok', 'tiktok'],
+  ['tiktok', '🎵 tiktok'],
   ['block', '🛑 Block'],
 ];
 
@@ -188,10 +188,10 @@ function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiName
   L.push(select('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
   L.push(select('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
-  L.push(urlTest('大模型', usGeminiNames.length ? usGeminiNames : names));
+  L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
   L.push(select('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(select('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
-  L.push(urlTest('tiktok', usNonGeminiNames.length ? usNonGeminiNames : names));
+  L.push(urlTest('🎵 tiktok', usNonGeminiNames.length ? usNonGeminiNames : names));
   L.push(select('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   return L.join('\n');
 }
@@ -251,10 +251,10 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push(sel('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
-  L.push(urlTest('大模型', usGeminiNames.length ? usGeminiNames : v2names));
+  L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
-  L.push(urlTest('tiktok', usNonGeminiNames.length ? usNonGeminiNames : v2names));
+  L.push(urlTest('🎵 tiktok', usNonGeminiNames.length ? usNonGeminiNames : v2names));
   L.push(sel('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   L.push('');
   L.push('[Rule]');
