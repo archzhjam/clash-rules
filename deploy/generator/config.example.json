@@ -10,7 +10,9 @@
   "groupFilters": {
     "nodeSelect": "香港",
     "media": "香港",
-    "netflix": "Gemini"
+    "netflix": "台湾",
+    "tiktok": { "include": ["美国"], "exclude": ["Gemini"] },
+    "llm": { "include": ["美国", "Gemini"] }
   },
   "testUrl": "http://www.gstatic.com/generate_204"
 }

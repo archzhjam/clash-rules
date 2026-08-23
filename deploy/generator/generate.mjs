@@ -33,6 +33,7 @@ const TEST_URL = CFG.testUrl || 'http://www.gstatic.com/generate_204';
 
 const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
+  ['llm', '大模型'],
   ['direct', '🎯 Direct'],
   ['microsoft', 'Ⓜ️ Microsoft'],
   ['apple', '🍎 Apple'],
@@ -146,10 +147,16 @@ function parseNodes(block) {
   return nodes;
 }
 
-/** 筛选节点名（包含关键词的集合） */
-function filterNames(names, keyword) {
-  if (!keyword) return names;
-  return names.filter((n) => n.includes(keyword));
+/** 筛选节点名。
+ *  filter 为字符串：节点名包含该关键词；
+ *  filter 为对象：{ include: [...], exclude: [...] }，名称须包含全部 include、不含任何 exclude。
+ */
+function filterNames(names, filter) {
+  if (!filter) return names;
+  if (typeof filter === 'string') return names.filter((n) => n.includes(filter));
+  const inc = (Array.isArray(filter.include) ? filter.include : [filter.include]).filter(Boolean);
+  const exc = (Array.isArray(filter.exclude) ? filter.exclude : [filter.exclude]).filter(Boolean);
+  return names.filter((n) => inc.every((k) => n.includes(k)) && !exc.some((k) => n.includes(k)));
 }
 
 /** 拉取 v2ray 原生 URI 订阅（Shadowrocket 官方格式），并按名称剔除节点 */
@@ -169,7 +176,7 @@ async function fetchV2rayNodes() {
 }
 
 /** 输出 YAML 策略组定义 */
-function buildGroups(names, hkNames, geminiNames) {
+function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames) {
   const select = (name, members) => `  - name: ${name}\n    type: select\n    proxies: [${members.join(', ')}]`;
   const urlTest = (name, members) =>
     `  - name: ${name}\n    type: url-test\n    url: ${TEST_URL}\n    interval: 300\n    proxies: [${members.join(', ')}]`;
@@ -180,15 +187,16 @@ function buildGroups(names, hkNames, geminiNames) {
   L.push(urlTest('🌍 主流媒体', hkNames.length ? hkNames : names));
   L.push(select('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
   L.push(select('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
-  L.push(urlTest('🎥 Netflix', geminiNames.length ? geminiNames : names));
+  L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
+  L.push(urlTest('大模型', usGeminiNames.length ? usGeminiNames : names));
   L.push(select('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(select('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
-  L.push(select('tiktok', ['🚀 节点选择', '🎯 Direct']));
+  L.push(urlTest('tiktok', usNonGeminiNames.length ? usNonGeminiNames : names));
   L.push(select('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   return L.join('\n');
 }
 
-function buildClash(nodes, names, hkNames, geminiNames, rules) {
+function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, rules) {
   const L = [];
   L.push('mixed-port: 7890');
   L.push('allow-lan: true');
@@ -221,8 +229,11 @@ function buildClash(nodes, names, hkNames, geminiNames, rules) {
   return L.join('\n') + '\n';
 }
 
-function buildShadowrocket(v2nodes, rules) {
+function buildShadowrocket(v2nodes, rules, filters) {
   const v2names = v2nodes.map((n) => n.name);
+  const taiwanNames = filterNames(v2names, filters.netflix);
+  const usGeminiNames = filterNames(v2names, filters.llm);
+  const usNonGeminiNames = filterNames(v2names, filters.tiktok);
   const L = [];
   L.push('[General]');
   L.push('dns-server = 223.5.5.5, 119.29.29.29');
@@ -232,16 +243,18 @@ function buildShadowrocket(v2nodes, rules) {
   L.push('');
   L.push('[Proxy Group]');
   const sel = (name, members) => `${name} = select, ${members.join(', ')}`;
+  const urlTest = (name, members) => `${name} = url-test, ${members.join(', ')}, url = ${TEST_URL}, interval = 300`;
   L.push(sel('🚀 节点选择', v2names));
   L.push(sel('🎯 Direct', ['DIRECT']));
   L.push(sel('🛑 Block', ['REJECT']));
   L.push(sel('🌍 主流媒体', v2names));
   L.push(sel('Ⓜ️ Microsoft', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📺 BiliBili', ['🚀 节点选择', '🎯 Direct']));
-  L.push(sel('🎥 Netflix', v2names));
+  L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
+  L.push(urlTest('大模型', usGeminiNames.length ? usGeminiNames : v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
   L.push(sel('📲 Telegram', ['🚀 节点选择', '🎯 Direct']));
-  L.push(sel('tiktok', ['🚀 节点选择', '🎯 Direct']));
+  L.push(urlTest('tiktok', usNonGeminiNames.length ? usNonGeminiNames : v2names));
   L.push(sel('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   L.push('');
   L.push('[Rule]');
@@ -280,8 +293,10 @@ async function main() {
   const { block, names } = await fetchNodes();
   console.log(`      节点数: ${names.length}（剔除: ${EXCLUDE.join(', ') || '无'}）`);
   const hkNames = filterNames(names, FILTERS.nodeSelect);
-  const geminiNames = filterNames(names, FILTERS.netflix);
-  console.log(`      香港节点: ${hkNames.length} | Gemini节点: ${geminiNames.length}`);
+  const taiwanNames = filterNames(names, FILTERS.netflix);
+  const usGeminiNames = filterNames(names, FILTERS.llm);
+  const usNonGeminiNames = filterNames(names, FILTERS.tiktok);
+  console.log(`      香港: ${hkNames.length} | 台湾(Netflix): ${taiwanNames.length} | 美Gemini(大模型): ${usGeminiNames.length} | 美非Gemini(tiktok): ${usNonGeminiNames.length}`);
   console.log('[1b/4] 拉取 v2ray URI 订阅（Shadowrocket 原生格式）...');
   let v2nodes = await fetchV2rayNodes();
   const srFilter = CFG.shadowrocketNodeFilter;
@@ -291,8 +306,8 @@ async function main() {
   const rules = await fetchRules();
   console.log(`      规则数: ${RULE_ORDER.reduce((s, [k]) => s + rules[k].length, 0) + (rules.process || []).length}`);
   console.log('[3/4] 生成配置...');
-  writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, geminiNames, rules), 'utf8');
-  writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(v2nodes, rules), 'utf8');
+  writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, rules), 'utf8');
+  writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(v2nodes, rules, FILTERS), 'utf8');
   console.log('[4/4] 完成：');
   for (const f of readdirSync(OUT)) {
     const fp = path.join(OUT, f);
