@@ -48,6 +48,7 @@ NAS 容器（clash-subgen）
 ```bash
 node generate.mjs            # 生成到 ./output
 node generate.mjs --serve    # 生成 + 启动 :8080
+node generate.mjs --serve-only  # 只启动 :8080（不重新生成）
 ```
 
 ## 安全说明

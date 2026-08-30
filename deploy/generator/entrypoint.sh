@@ -3,6 +3,10 @@
 set -e
 INTERVAL="${GENERATE_INTERVAL:-21600}"
 
+# 挂载卷属主与容器内用户不一致时，git 2.35.2+ 会拒绝操作（dubious ownership）
+git config --global --add safe.directory /app/output || true
+git config --global --add safe.directory /app || true
+
 push_to_github() {
   cd /app/output
   git init -q 2>/dev/null || true
@@ -19,8 +23,10 @@ push_to_github() {
   fi
 }
 
-echo "[entry] 启动 HTTP 服务并首次生成..."
-node /app/generate.mjs --out /app/output --serve &
+echo "[entry] 首次生成（前台完成，避免与推送竞态）..."
+node /app/generate.mjs --out /app/output
+echo "[entry] 启动 HTTP 服务..."
+node /app/generate.mjs --out /app/output --serve-only &
 echo "[entry] 首次推送..."
 push_to_github
 

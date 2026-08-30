@@ -7,6 +7,7 @@
  *   node generate.mjs                     # 生成到 ./output
  *   node generate.mjs --out /app/output   # 指定输出目录
  *   node generate.mjs --serve             # 生成并启动 HTTP 服务
+ *   node generate.mjs --serve-only        # 只启动 HTTP 服务（不重新生成，供 entrypoint 生成完再起服务）
  * 配置: 同目录 config.json（机场地址等，不入库）
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, statSync } from 'node:fs';
@@ -26,6 +27,7 @@ function loadConfig() {
 const CFG = loadConfig();
 const OUT = (args.indexOf('--out') !== -1 ? args[args.indexOf('--out') + 1] : (CFG.outputDir || path.join(__dirname, 'output')));
 const SERVE = args.includes('--serve');
+const SERVE_ONLY = args.includes('--serve-only');
 const PORT = CFG.listenPort || 8080;
 const EXCLUDE = CFG.excludeNodes || [];
 const FILTERS = CFG.groupFilters || {}; // { nodeSelect: '香港', media: '香港', netflix: 'Gemini' }
@@ -305,6 +307,7 @@ function startServer() {
 }
 
 async function main() {
+  if (SERVE_ONLY) { startServer(); return; }
   mkdirSync(OUT, { recursive: true });
   console.log('[1/4] 拉取机场订阅节点...');
   const { block, names } = await fetchNodes();
