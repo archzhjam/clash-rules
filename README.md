@@ -16,6 +16,7 @@ clash-rules/
 │   ├── apple.list             # 🍎 Apple（29 条）
 │   ├── telegram.list          # 📲 Telegram（13 条）
 │   ├── bilibili.list          # 📺 BiliBili（37 条，直连 🎯 Direct）
+│   ├── facebook.list          # 💙 Facebook（31 条，Facebook/Instagram/Reels/Messenger，走美国节点）
 │   ├── media.list             # 🌍 主流媒体（132 条）
 │   ├── tiktok.list            # 🎵 tiktok（1 条，DOMAIN-KEYWORD）
 │   ├── block.list             # 🛑 Block（412 条）
@@ -30,7 +31,7 @@ clash-rules/
 
 | 规则集 | 数量 | 兼容性 |
 |---|---|---|
-| netflix / llm / direct / microsoft / apple / telegram / bilibili / media / tiktok / block | 1030 | ✅ 全平台（DOMAIN/SUFFIX/KEYWORD/IP-CIDR/DST-PORT） |
+| netflix / llm / direct / microsoft / apple / telegram / bilibili / facebook / media / tiktok / block | 1061 | ✅ 全平台（DOMAIN/SUFFIX/KEYWORD/IP-CIDR/DST-PORT） |
 | process.list | 16 | ⚠️ 仅 Clash 桌面端（PROCESS-NAME 路由器/手机不适用） |
 
 **基础规则**（各端配置里直接写，不进规则集）：
@@ -41,7 +42,7 @@ clash-rules/
 ```
 
 **规则优先级**：规则集引用顺序保持与原文件一致（否则匹配结果会变）：
-`netflix → llm → direct → microsoft → apple → telegram → bilibili → media → tiktok → block → GEOIP,CN → GEOSITE,CN → MATCH`
+`netflix → llm → direct → microsoft → apple → telegram → bilibili → facebook → media → tiktok → block → GEOIP,CN → GEOSITE,CN → MATCH`
 
 ## 各端接入
 
@@ -49,7 +50,7 @@ clash-rules/
 
 - 在订阅上启用 **Merge 配置**，内容见 [`base/verge-merge.yaml`](base/verge-merge.yaml)（含 rule-providers + rules 引用）；
 - `process.list` 额外引用（`RULE-SET,process,🎯 Direct`）——桌面端独有；
-- 需在订阅配置中定义同名策略组：🛑 Block、🎯 Direct、🌍 主流媒体、Ⓜ️ Microsoft、📺 BiliBili、🎥 Netflix、🤖 大模型、🍎 Apple、📲 Telegram、🎵 tiktok、🐟 漏网之鱼。
+- 需在订阅配置中定义同名策略组：🛑 Block、🎯 Direct、🌍 主流媒体、Ⓜ️ Microsoft、📺 BiliBili、🎥 Netflix、💙 Facebook、🤖 大模型、🍎 Apple、📲 Telegram、🎵 tiktok、🐟 漏网之鱼。
 
 ### 2) OpenClash（OpenWrt 软路由）
 
@@ -68,6 +69,7 @@ clash-rules/
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/apple.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/telegram.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/bilibili.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/facebook.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/media.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/tiktok.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/block.list

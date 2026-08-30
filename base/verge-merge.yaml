@@ -12,6 +12,7 @@ prepend-rules:
   - RULE-SET,apple,🍎 Apple
   - RULE-SET,telegram,📲 Telegram
   - RULE-SET,bilibili,🎯 Direct
+  - RULE-SET,facebook,💙 Facebook
   - RULE-SET,media,🌍 主流媒体
   - RULE-SET,tiktok,🎵 tiktok
   - RULE-SET,block,🛑 Block
@@ -28,6 +29,7 @@ prepend-rule-providers:
   apple: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/apple.list", path: ./rules/apple.yaml, interval: 86400}
   telegram: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/telegram.list", path: ./rules/telegram.yaml, interval: 86400}
   bilibili: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/bilibili.list", path: ./rules/bilibili.yaml, interval: 86400}
+  facebook: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/facebook.list", path: ./rules/facebook.yaml, interval: 86400}
   media: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/media.list", path: ./rules/media.yaml, interval: 86400}
   tiktok: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/tiktok.list", path: ./rules/tiktok.yaml, interval: 86400}
   block: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/block.list", path: ./rules/block.yaml, interval: 86400}

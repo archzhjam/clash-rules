@@ -39,6 +39,7 @@ const RULE_ORDER = [
   ['apple', '🍎 Apple'],
   ['telegram', '📲 Telegram'],
   ['bilibili', '🎯 Direct'],
+  ['facebook', '💙 Facebook'],
   ['media', '🌍 主流媒体'],
   ['tiktok', '🎵 tiktok'],
   ['block', '🛑 Block'],
@@ -176,7 +177,7 @@ async function fetchV2rayNodes() {
 }
 
 /** 输出 YAML 策略组定义 */
-function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames) {
+function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames) {
   const select = (name, members) => `  - name: ${name}\n    type: select\n    proxies: [${members.join(', ')}]`;
   const urlTest = (name, members) =>
     `  - name: ${name}\n    type: url-test\n    url: ${TEST_URL}\n    interval: 300\n    proxies: [${members.join(', ')}]`;
@@ -187,6 +188,7 @@ function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiName
   L.push(urlTest('🌍 主流媒体', hkNames.length ? hkNames : names));
   L.push(select('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
   L.push(select('📺 BiliBili', ['🎯 Direct', '🚀 节点选择']));
+  L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : names));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
   L.push(select('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
@@ -196,7 +198,7 @@ function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiName
   return L.join('\n');
 }
 
-function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, rules) {
+function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, rules) {
   const L = [];
   L.push('mixed-port: 7890');
   L.push('allow-lan: true');
@@ -232,7 +234,7 @@ function buildClash(nodes, names, hkNames, taiwanNames, usGeminiNames, usNonGemi
   L.push('proxies:');
   L.push(nodes);
   L.push('proxy-groups:');
-  L.push(buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames));
+  L.push(buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames));
   L.push('rules:');
   for (const [key, policy] of RULE_ORDER) for (const r of rules[key]) L.push(`  - ${inlineRule(r, policy)}`);
   for (const r of rules.process || []) L.push(`  - ${inlineRule(r, '🎯 Direct')}`);
@@ -247,6 +249,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   const taiwanNames = filterNames(v2names, filters.netflix);
   const usGeminiNames = filterNames(v2names, filters.llm);
   const usNonGeminiNames = filterNames(v2names, filters.tiktok);
+  const fbNames = filterNames(v2names, filters.facebook);
   const L = [];
   L.push('[General]');
   L.push('dns-server = 223.5.5.5, 119.29.29.29');
@@ -263,6 +266,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push(sel('🌍 主流媒体', v2names));
   L.push(sel('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
   L.push(sel('📺 BiliBili', ['🎯 Direct', '🚀 节点选择']));
+  L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : v2names));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
@@ -309,7 +313,8 @@ async function main() {
   const taiwanNames = filterNames(names, FILTERS.netflix);
   const usGeminiNames = filterNames(names, FILTERS.llm);
   const usNonGeminiNames = filterNames(names, FILTERS.tiktok);
-  console.log(`      香港: ${hkNames.length} | 台湾(Netflix): ${taiwanNames.length} | 美Gemini(大模型): ${usGeminiNames.length} | 美非Gemini(tiktok): ${usNonGeminiNames.length}`);
+  const fbNames = filterNames(names, FILTERS.facebook);
+  console.log(`      香港: ${hkNames.length} | 台湾(Netflix): ${taiwanNames.length} | 美Gemini(大模型): ${usGeminiNames.length} | 美非Gemini(tiktok): ${usNonGeminiNames.length} | 美(Facebook): ${fbNames.length}`);
   console.log('[1b/4] 拉取 v2ray URI 订阅（Shadowrocket 原生格式）...');
   let v2nodes = await fetchV2rayNodes();
   const srFilter = CFG.shadowrocketNodeFilter;
@@ -319,7 +324,7 @@ async function main() {
   const rules = await fetchRules();
   console.log(`      规则数: ${RULE_ORDER.reduce((s, [k]) => s + rules[k].length, 0) + (rules.process || []).length}`);
   console.log('[3/4] 生成配置...');
-  writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, rules), 'utf8');
+  writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, rules), 'utf8');
   writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(v2nodes, rules, FILTERS), 'utf8');
   console.log('[4/4] 完成：');
   for (const f of readdirSync(OUT)) {
