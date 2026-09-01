@@ -11,9 +11,10 @@
     "nodeSelect": "香港",
     "media": "香港",
     "netflix": "台湾",
-    "facebook": "美国",
+    "facebook": { "include": ["美国"], "exclude": ["电信", "IPv6", "限速"] },
     "tiktok": { "include": ["美国"], "exclude": ["Gemini"] },
     "llm": { "include": ["美国", "Gemini"] }
   },
+  "facebookTestUrl": "https://www.instagram.com",
   "testUrl": "http://www.gstatic.com/generate_204"
 }

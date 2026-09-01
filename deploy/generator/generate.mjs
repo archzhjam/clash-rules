@@ -32,6 +32,8 @@ const PORT = CFG.listenPort || 8080;
 const EXCLUDE = CFG.excludeNodes || [];
 const FILTERS = CFG.groupFilters || {}; // { nodeSelect: '香港', media: '香港', netflix: 'Gemini' }
 const TEST_URL = CFG.testUrl || 'http://www.gstatic.com/generate_204';
+// Facebook 组独立测速 URL：测到 Meta 的真实延迟（Reels/IG 走 Meta CDN，gstatic 延迟不具代表性）
+const FB_TEST_URL = CFG.facebookTestUrl || 'https://www.instagram.com';
 
 const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
@@ -181,8 +183,8 @@ async function fetchV2rayNodes() {
 /** 输出 YAML 策略组定义 */
 function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames) {
   const select = (name, members) => `  - name: ${name}\n    type: select\n    proxies: [${members.join(', ')}]`;
-  const urlTest = (name, members) =>
-    `  - name: ${name}\n    type: url-test\n    url: ${TEST_URL}\n    interval: 300\n    proxies: [${members.join(', ')}]`;
+  const urlTest = (name, members, url = TEST_URL) =>
+    `  - name: ${name}\n    type: url-test\n    url: ${url}\n    interval: 300\n    proxies: [${members.join(', ')}]`;
   const L = [];
   L.push(urlTest('🚀 节点选择', hkNames.length ? hkNames : names));
   L.push(select('🎯 Direct', ['DIRECT']));
@@ -190,7 +192,7 @@ function buildGroups(names, hkNames, taiwanNames, usGeminiNames, usNonGeminiName
   L.push(urlTest('🌍 主流媒体', hkNames.length ? hkNames : names));
   L.push(select('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
   L.push(select('📺 BiliBili', ['🎯 Direct', '🚀 节点选择']));
-  L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : names));
+  L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : names, FB_TEST_URL));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
   L.push(select('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
@@ -261,14 +263,14 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push('');
   L.push('[Proxy Group]');
   const sel = (name, members) => `${name} = select, ${members.join(', ')}`;
-  const urlTest = (name, members) => `${name} = url-test, ${members.join(', ')}, url = ${TEST_URL}, interval = 300`;
+  const urlTest = (name, members, url = TEST_URL) => `${name} = url-test, ${members.join(', ')}, url = ${url}, interval = 300`;
   L.push(sel('🚀 节点选择', v2names));
   L.push(sel('🎯 Direct', ['DIRECT']));
   L.push(sel('🛑 Block', ['REJECT']));
   L.push(sel('🌍 主流媒体', v2names));
   L.push(sel('Ⓜ️ Microsoft', ['🎯 Direct', '🚀 节点选择']));
   L.push(sel('📺 BiliBili', ['🎯 Direct', '🚀 节点选择']));
-  L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : v2names));
+  L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : v2names, FB_TEST_URL));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
   L.push(sel('🍎 Apple', ['🚀 节点选择', '🎯 Direct']));
