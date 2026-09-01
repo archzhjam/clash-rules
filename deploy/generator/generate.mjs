@@ -38,6 +38,8 @@ const FB_TEST_URL = CFG.facebookTestUrl || 'https://www.instagram.com';
 const MEDIA_TEST_URL = CFG.mediaTestUrl || 'https://www.youtube.com';
 // Telegram 组独立测速 URL
 const TG_TEST_URL = CFG.telegramTestUrl || 'https://core.telegram.org';
+// Telegram 组测速间隔（默认一天一次：避免频繁切换出口 IP 触发风控）
+const TG_INTERVAL = CFG.telegramInterval || 86400;
 
 const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
@@ -187,8 +189,8 @@ async function fetchV2rayNodes() {
 /** 输出 YAML 策略组定义 */
 function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames) {
   const select = (name, members) => `  - name: ${name}\n    type: select\n    proxies: [${members.join(', ')}]`;
-  const urlTest = (name, members, url = TEST_URL) =>
-    `  - name: ${name}\n    type: url-test\n    url: ${url}\n    interval: 300\n    proxies: [${members.join(', ')}]`;
+  const urlTest = (name, members, url = TEST_URL, interval = 300) =>
+    `  - name: ${name}\n    type: url-test\n    url: ${url}\n    interval: ${interval}\n    proxies: [${members.join(', ')}]`;
   const L = [];
   L.push(urlTest('🚀 节点选择', hkNames.length ? hkNames : names));
   L.push(select('🎯 Direct', ['DIRECT']));
@@ -200,7 +202,7 @@ function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usN
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
   L.push(select('🍎 Apple', ['🎯 Direct', '🚀 节点选择']));
-  L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : names, TG_TEST_URL));
+  L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : names, TG_TEST_URL, TG_INTERVAL));
   L.push(urlTest('🎵 tiktok', usNonGeminiNames.length ? usNonGeminiNames : names));
   L.push(select('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   return L.join('\n');
@@ -269,7 +271,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push('');
   L.push('[Proxy Group]');
   const sel = (name, members) => `${name} = select, ${members.join(', ')}`;
-  const urlTest = (name, members, url = TEST_URL) => `${name} = url-test, ${members.join(', ')}, url = ${url}, interval = 300`;
+  const urlTest = (name, members, url = TEST_URL, interval = 300) => `${name} = url-test, ${members.join(', ')}, url = ${url}, interval = ${interval}`;
   L.push(sel('🚀 节点选择', v2names));
   L.push(sel('🎯 Direct', ['DIRECT']));
   L.push(sel('🛑 Block', ['REJECT']));
@@ -280,7 +282,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
   L.push(sel('🍎 Apple', ['🎯 Direct', '🚀 节点选择']));
-  L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : v2names, TG_TEST_URL));
+  L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : v2names, TG_TEST_URL, TG_INTERVAL));
   L.push(urlTest('🎵 tiktok', usNonGeminiNames.length ? usNonGeminiNames : v2names));
   L.push(sel('🐟 漏网之鱼', ['🚀 节点选择', '🎯 Direct']));
   L.push('');

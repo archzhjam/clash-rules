@@ -18,5 +18,6 @@
   "facebookTestUrl": "https://www.instagram.com",
   "mediaTestUrl": "https://www.youtube.com",
   "telegramTestUrl": "https://core.telegram.org",
+  "telegramInterval": 86400,
   "testUrl": "http://www.gstatic.com/generate_204"
 }
