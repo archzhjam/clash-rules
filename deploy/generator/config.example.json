@@ -11,10 +11,12 @@
     "media": { "include": ["香港"], "exclude": ["联通优化"] },
     "netflix": "台湾",
     "facebook": "香港",
+    "telegram": "香港",
     "tiktok": { "include": ["美国"], "exclude": ["Gemini"] },
     "llm": { "include": ["美国", "Gemini"] }
   },
   "facebookTestUrl": "https://www.instagram.com",
   "mediaTestUrl": "https://www.youtube.com",
+  "telegramTestUrl": "https://core.telegram.org",
   "testUrl": "http://www.gstatic.com/generate_204"
 }
