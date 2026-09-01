@@ -319,7 +319,7 @@ async function main() {
   const usGeminiNames = filterNames(names, FILTERS.llm);
   const usNonGeminiNames = filterNames(names, FILTERS.tiktok);
   const fbNames = filterNames(names, FILTERS.facebook);
-  console.log(`      香港: ${hkNames.length} | 台湾(Netflix): ${taiwanNames.length} | 美Gemini(大模型): ${usGeminiNames.length} | 美非Gemini(tiktok): ${usNonGeminiNames.length} | 美(Facebook): ${fbNames.length}`);
+  console.log(`      香港: ${hkNames.length} | 台湾(Netflix): ${taiwanNames.length} | 美Gemini(大模型): ${usGeminiNames.length} | 美非Gemini(tiktok): ${usNonGeminiNames.length} | Facebook: ${fbNames.length}`);
   console.log('[1b/4] 拉取 v2ray URI 订阅（Shadowrocket 原生格式）...');
   let v2nodes = await fetchV2rayNodes();
   const srFilter = CFG.shadowrocketNodeFilter;

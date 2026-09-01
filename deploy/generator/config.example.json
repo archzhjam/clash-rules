@@ -11,7 +11,7 @@
     "nodeSelect": "香港",
     "media": "香港",
     "netflix": "台湾",
-    "facebook": { "include": ["美国"], "exclude": ["电信", "IPv6", "限速"] },
+    "facebook": "香港",
     "tiktok": { "include": ["美国"], "exclude": ["Gemini"] },
     "llm": { "include": ["美国", "Gemini"] }
   },
