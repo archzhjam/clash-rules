@@ -3,7 +3,6 @@
 # JavDB 用 DOMAIN-KEYWORD 而非固定域名：镜像域名常轮换（javdb.com/javdb001.com/javdb8.com…）。
 # 其余刮削源(mgstage/r18)403/406 属源站自身限制，与路由无关；按需在此追加新刮削源。
 DOMAIN-SUFFIX,javbus.com
-DOMAIN-KEYWORD,javdb
 DOMAIN-SUFFIX,jav321.com
 DOMAIN-SUFFIX,avsox.host
 DOMAIN-SUFFIX,avsox.website

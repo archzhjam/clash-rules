@@ -1,0 +1,3 @@
+# 🎬 Emby US —— 需要美国出口的刮削源（javdb 镜像域名常轮换，用关键字覆盖）
+# 单独走纯美国组：javdb 图片/CDN 需美国 IP，不走日/美混合池
+DOMAIN-KEYWORD,javdb
