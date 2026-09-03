@@ -19,7 +19,7 @@ clash-rules/
 │   ├── facebook.list          # 💙 Facebook（31 条，Facebook/Instagram/Reels/Messenger，走美国节点）
 │   ├── media.list             # 🌍 主流媒体（132 条）
 │   ├── tiktok.list            # 🎵 tiktok（1 条，DOMAIN-KEYWORD）
-│   ├── emby.list              # 🎬 Emby（1 条，DOMAIN-KEYWORD，走日本/美国非Gemini url-test）
+│   ├── emby.list              # 🎬 Emby（9 条，JavScraper 刮削站域名，走日本/美国非Gemini url-test）
 │   ├── block.list             # 🛑 Block（412 条）
 │   └── process.list           # ⚠️ PROCESS-NAME×16，仅 Windows/macOS 使用
 ├── base/
@@ -32,7 +32,7 @@ clash-rules/
 
 | 规则集 | 数量 | 兼容性 |
 |---|---|---|
-| netflix / llm / direct / microsoft / apple / telegram / bilibili / facebook / media / tiktok / emby / block | 1048 | ✅ 全平台（DOMAIN/SUFFIX/KEYWORD/IP-CIDR/DST-PORT） |
+| netflix / llm / direct / microsoft / apple / telegram / bilibili / facebook / media / tiktok / emby / block | 1056 | ✅ 全平台（DOMAIN/SUFFIX/KEYWORD/IP-CIDR/DST-PORT） |
 | process.list | 16 | ⚠️ 仅 Clash 桌面端（PROCESS-NAME 路由器/手机不适用） |
 
 **基础规则**（各端配置里直接写，不进规则集）：

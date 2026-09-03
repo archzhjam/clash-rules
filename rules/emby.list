@@ -1,4 +1,13 @@
-# 🎬 Emby —— Emby 媒体服务器（域名含 emby 即命中，覆盖官方 emby.media 与自建 emby 服）
-# 若你的 Emby 服务器是独立域名/IP（不包含 emby 字样），在此追加，例如：
-# DOMAIN-SUFFIX,myemby.example.com
-DOMAIN-KEYWORD,emby
+# 🎬 Emby —— Emby 刮削流量（JavScraper 等插件抓取成人元数据站，走日/美节点）
+# 说明：原 DOMAIN-KEYWORD,emby 只匹配域名含 emby 的流量，刮削站一个都匹配不到，已删除。
+# JavDB 用 DOMAIN-KEYWORD 而非固定域名：镜像域名常轮换（javdb.com/javdb001.com/javdb8.com…）。
+# 其余刮削源(mgstage/r18)403/406 属源站自身限制，与路由无关；按需在此追加新刮削源。
+DOMAIN-SUFFIX,javbus.com
+DOMAIN-KEYWORD,javdb
+DOMAIN-SUFFIX,jav321.com
+DOMAIN-SUFFIX,avsox.host
+DOMAIN-SUFFIX,avsox.website
+DOMAIN-SUFFIX,mgstage.com
+DOMAIN-SUFFIX,r18.com
+DOMAIN-SUFFIX,dmm.co.jp
+DOMAIN-SUFFIX,fc2club.net
