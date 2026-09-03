@@ -11,3 +11,11 @@ DOMAIN-SUFFIX,mgstage.com
 DOMAIN-SUFFIX,r18.com
 DOMAIN-SUFFIX,dmm.co.jp
 DOMAIN-SUFFIX,fc2club.net
+# 欧美站：/graphql 接口有 Cloudflare 人机验证，香港 Akari IP 被拉黑；
+# 走 🎬 Emby 组日/美节点可过（blacked/tushy/vixen/deeper 同属 Vixen Media Group）
+DOMAIN-SUFFIX,blacked.com
+DOMAIN-SUFFIX,blackedraw.com
+DOMAIN-SUFFIX,vixen.com
+DOMAIN-SUFFIX,tushy.com
+DOMAIN-SUFFIX,tushyraw.com
+DOMAIN-SUFFIX,deeper.com
