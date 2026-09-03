@@ -39,9 +39,14 @@ NAS 容器（clash-subgen）
   "outputDir": "./output",
   "listenPort": 8080,
   "pushRepo": "git@github.com:archzhjam/clash-configs.git",
-  "pushBranch": "main"
+  "pushBranch": "main",
+  "groupFilters": {
+    "emby": ["日本", { "include": ["美国"], "exclude": ["Gemini"] }]
+  }
 }
 ```
+
+> `groupFilters`：值为字符串=名称包含即入组；对象=`include` 全含 + `exclude` 全不含；**数组=多个筛选条件取并集**（如 Emby 组同时收录「日本」与「美国非 Gemini」节点）。缺省时 emby 默认 `["日本", {"include":["美国"],"exclude":["Gemini"]}]`。
 
 ## 本地测试（无需容器）
 

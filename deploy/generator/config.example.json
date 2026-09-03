@@ -13,7 +13,8 @@
     "facebook": "香港",
     "telegram": "香港",
     "tiktok": { "include": ["美国"], "exclude": ["Gemini"] },
-    "llm": { "include": ["美国", "Gemini"] }
+    "llm": { "include": ["美国", "Gemini"] },
+    "emby": ["日本", { "include": ["美国"], "exclude": ["Gemini"] }]
   },
   "facebookTestUrl": "https://www.instagram.com",
   "mediaTestUrl": "https://www.youtube.com",

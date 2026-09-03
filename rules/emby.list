@@ -1,0 +1,4 @@
+# 🎬 Emby —— Emby 媒体服务器（域名含 emby 即命中，覆盖官方 emby.media 与自建 emby 服）
+# 若你的 Emby 服务器是独立域名/IP（不包含 emby 字样），在此追加，例如：
+# DOMAIN-SUFFIX,myemby.example.com
+DOMAIN-KEYWORD,emby
