@@ -20,7 +20,7 @@ clash-rules/
 │   ├── media.list             # 🌍 主流媒体（132 条）
 │   ├── tiktok.list            # 🎵 tiktok（1 条，DOMAIN-KEYWORD）
 │   ├── emby.list              # 🎬 Emby（14 条，JavScraper 刮削站 + 欧美站域名，走日本/美国非Gemini url-test）
-│   ├── emby-us.list           # 🎬 Emby US（1 条，javdb 关键字，走纯美国节点）
+│   ├── emby-us.list           # 🎲 Random（1 条，javdb 关键字，每日轮换国家出口）
 │   ├── block.list             # 🛑 Block（412 条）
 │   └── process.list           # ⚠️ PROCESS-NAME×16，仅 Windows/macOS 使用
 ├── base/
@@ -52,7 +52,7 @@ clash-rules/
 
 - 在订阅上启用 **Merge 配置**，内容见 [`base/verge-merge.yaml`](base/verge-merge.yaml)（含 rule-providers + rules 引用）；
 - `process.list` 额外引用（`RULE-SET,process,🎯 Direct`）——桌面端独有；
-- 需在订阅配置中定义同名策略组：🛑 Block、🎯 Direct、🌍 主流媒体、Ⓜ️ Microsoft、📺 BiliBili、🎥 Netflix、💙 Facebook、🤖 大模型、🍎 Apple、📲 Telegram、🎵 tiktok、🎬 Emby、🎬 Emby US、🐟 漏网之鱼。
+- 需在订阅配置中定义同名策略组：🛑 Block、🎯 Direct、🌍 主流媒体、Ⓜ️ Microsoft、📺 BiliBili、🎥 Netflix、💙 Facebook、🤖 大模型、🍎 Apple、📲 Telegram、🎵 tiktok、🎬 Emby、🎲 Random、🐟 漏网之鱼。
 
 ### 2) OpenClash（OpenWrt 软路由）
 

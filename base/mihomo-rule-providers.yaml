@@ -106,7 +106,7 @@ rules:
   - RULE-SET,media,🌍 主流媒体
   - RULE-SET,tiktok,🎵 tiktok
   - RULE-SET,emby,🎬 Emby
-  - RULE-SET,emby-us,🎬 Emby US
+  - RULE-SET,emby-us,🎲 Random
   - RULE-SET,block,🛑 Block
   # 基础规则
   - GEOIP,CN,🎯 Direct
