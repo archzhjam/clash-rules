@@ -44,6 +44,12 @@ const TG_INTERVAL = CFG.telegramInterval || 86400;
 const EMBY_DEFAULT_FILTER = ['日本', { include: ['美国'], exclude: ['Gemini'] }];
 // 🎲Random 轮换国家池（javdb 每日轮换出口规避 7 天 IP 封禁；可按实测可用性增删）
 const RANDOM_COUNTRIES = (CFG.randomCountries && CFG.randomCountries.length ? CFG.randomCountries : ['美国', '台湾', '德国', '英国', '加拿大', '澳大利亚', '法国', '印度']);
+// 轮换日界：北京时间 03:00 切换新国家（NAS 03:30 cron 触发重生成发布）
+// 北京 03:00 = UTC 前日 19:00 → 用 (nowUTC + 8h - 3h) = (nowUTC + 5h) 的天数取模
+function randomCountry() {
+  const dayIdx = Math.floor((Date.now() + 5 * 3600000) / 86400000) % RANDOM_COUNTRIES.length;
+  return RANDOM_COUNTRIES[dayIdx];
+}
 
 const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
@@ -210,7 +216,7 @@ function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usN
     `  - name: ${name}\n    type: url-test\n    url: ${url}\n    interval: ${interval}\n    proxies: [${members.join(', ')}]`;
   // 🎲 Random：单一组，每日轮换国家（javdb 规避 7 天 IP 封禁）
   // 组内节点 = 今天 UTC 日期轮到的国家的全部节点（url-test 国内自动选快）；跨天重新生成后自动换国
-  const todayCountry = RANDOM_COUNTRIES[Math.floor(Date.now() / 86400000) % RANDOM_COUNTRIES.length];
+  const todayCountry = randomCountry();
   const L = [];
   L.push(urlTest('🚀 节点选择', hkNames.length ? hkNames : names));
   L.push(select('🎯 Direct', ['DIRECT']));
@@ -306,7 +312,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
   L.push(urlTest('🎬 Emby', embyNames.length ? embyNames : v2names));
   // 🎲 Random：单一组，每日轮换国家；组内节点 = 当天国家全部节点
-  const todayCountry = RANDOM_COUNTRIES[Math.floor(Date.now() / 86400000) % RANDOM_COUNTRIES.length];
+  const todayCountry = randomCountry();
   const randomMembers = filterNames(v2names, todayCountry);
   L.push(urlTest('🎲 Random', randomMembers.length ? randomMembers : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
