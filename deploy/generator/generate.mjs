@@ -43,7 +43,7 @@ const TG_INTERVAL = CFG.telegramInterval || 86400;
 // Emby 组默认节点池：日本 + 美国非 Gemini（config.json 的 groupFilters.emby 可覆盖；数组=多条件并集）
 const EMBY_DEFAULT_FILTER = ['日本', { include: ['美国'], exclude: ['Gemini'] }];
 // 🎲Random 轮换国家池（javdb 每日轮换出口规避 7 天 IP 封禁；可按实测可用性增删）
-const RANDOM_COUNTRIES = (CFG.randomCountries && CFG.randomCountries.length ? CFG.randomCountries : ['美国', '香港', '台湾', '德国', '英国', '加拿大', '澳大利亚']);
+const RANDOM_COUNTRIES = (CFG.randomCountries && CFG.randomCountries.length ? CFG.randomCountries : ['美国', '香港', '台湾', '德国', '英国', '加拿大', '澳大利亚', '法国', '印度']);
 
 const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
