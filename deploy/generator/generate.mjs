@@ -208,11 +208,9 @@ function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usN
   const select = (name, members) => `  - name: ${name}\n    type: select\n    proxies: [${members.join(', ')}]`;
   const urlTest = (name, members, url = TEST_URL, interval = 300) =>
     `  - name: ${name}\n    type: url-test\n    url: ${url}\n    interval: ${interval}\n    proxies: [${members.join(', ')}]`;
-  // 🎲 Random：每日轮换国家（javdb 规避 7 天 IP 封禁）
-  // 每国一个 url-test 子组（国内自动选快）；select 按 UTC 日期轮换顺序，当天国家排首位=默认选中
-  const todayIdx = Math.floor(Date.now() / 86400000) % RANDOM_COUNTRIES.length;
-  const subGroups = RANDOM_COUNTRIES.map((c) => `🎲-${c}`);
-  const rotated = RANDOM_COUNTRIES.map((_, i) => subGroups[(todayIdx + i) % subGroups.length]);
+  // 🎲 Random：单一组，每日轮换国家（javdb 规避 7 天 IP 封禁）
+  // 组内节点 = 今天 UTC 日期轮到的国家的全部节点（url-test 国内自动选快）；跨天重新生成后自动换国
+  const todayCountry = RANDOM_COUNTRIES[Math.floor(Date.now() / 86400000) % RANDOM_COUNTRIES.length];
   const L = [];
   L.push(urlTest('🚀 节点选择', hkNames.length ? hkNames : names));
   L.push(select('🎯 Direct', ['DIRECT']));
@@ -223,12 +221,8 @@ function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usN
   L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : names, FB_TEST_URL));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : names));
   L.push(urlTest('🎬 Emby', embyNames.length ? embyNames : names));
-  // 🎲 Random 子组（各国）
-  for (let i = 0; i < RANDOM_COUNTRIES.length; i++) {
-    const members = filterNames(names, RANDOM_COUNTRIES[i]);
-    L.push(urlTest(subGroups[i], members.length ? members : names));
-  }
-  L.push(select('🎲 Random', rotated));
+  const randomMembers = filterNames(names, todayCountry);
+  L.push(urlTest('🎲 Random', randomMembers.length ? randomMembers : names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
   L.push(select('🍎 Apple', ['🎯 Direct', '🚀 节点选择']));
   L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : names, TG_TEST_URL, TG_INTERVAL));
@@ -292,10 +286,6 @@ function buildShadowrocket(v2nodes, rules, filters) {
   const fbNames = filterNames(v2names, filters.facebook);
   const tgNames = filterNames(v2names, filters.telegram);
   const embyNames = filterNames(v2names, filters.emby || EMBY_DEFAULT_FILTER);
-  // 🎲 Random 每日轮换：select 组 = 各国 url-test 子组，当天国家排首位（默认选中）
-  const todayIdx = Math.floor(Date.now() / 86400000) % RANDOM_COUNTRIES.length;
-  const subGroups = RANDOM_COUNTRIES.map((c) => `🎲-${c}`);
-  const rotated = RANDOM_COUNTRIES.map((_, i) => subGroups[(todayIdx + i) % subGroups.length]);
   const L = [];
   L.push('[General]');
   L.push('dns-server = 223.5.5.5, 119.29.29.29');
@@ -315,12 +305,10 @@ function buildShadowrocket(v2nodes, rules, filters) {
   L.push(urlTest('💙 Facebook', fbNames.length ? fbNames : v2names, FB_TEST_URL));
   L.push(urlTest('🎥 Netflix', taiwanNames.length ? taiwanNames : v2names));
   L.push(urlTest('🎬 Emby', embyNames.length ? embyNames : v2names));
-  // 🎲 Random 子组（各国）
-  for (let i = 0; i < RANDOM_COUNTRIES.length; i++) {
-    const members = filterNames(v2names, RANDOM_COUNTRIES[i]);
-    L.push(urlTest(subGroups[i], members.length ? members : v2names));
-  }
-  L.push(sel('🎲 Random', rotated));
+  // 🎲 Random：单一组，每日轮换国家；组内节点 = 当天国家全部节点
+  const todayCountry = RANDOM_COUNTRIES[Math.floor(Date.now() / 86400000) % RANDOM_COUNTRIES.length];
+  const randomMembers = filterNames(v2names, todayCountry);
+  L.push(urlTest('🎲 Random', randomMembers.length ? randomMembers : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
   L.push(sel('🍎 Apple', ['🎯 Direct', '🚀 节点选择']));
   L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : v2names, TG_TEST_URL, TG_INTERVAL));

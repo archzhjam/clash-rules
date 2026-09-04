@@ -20,7 +20,7 @@ clash-rules/
 │   ├── media.list             # 🌍 主流媒体（132 条）
 │   ├── tiktok.list            # 🎵 tiktok（1 条，DOMAIN-KEYWORD）
 │   ├── emby.list              # 🎬 Emby（14 条，JavScraper 刮削站 + 欧美站域名，走日本/美国非Gemini url-test）
-│   ├── emby-us.list           # 🎲 Random（1 条，javdb 关键字，每日轮换国家出口）
+│   ├── emby-us.list           # 🎲 Random（1 条，javdb 关键字，单组每日轮换国家）
 │   ├── block.list             # 🛑 Block（412 条）
 │   └── process.list           # ⚠️ PROCESS-NAME×16，仅 Windows/macOS 使用
 ├── base/
