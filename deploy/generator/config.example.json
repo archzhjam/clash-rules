@@ -16,7 +16,7 @@
     "llm": { "include": ["美国", "Gemini"] },
     "emby": ["日本", { "include": ["美国"], "exclude": ["Gemini"] }]
   },
-  "randomCountries": ["美国", "香港", "台湾", "德国", "英国", "加拿大", "澳大利亚", "法国", "印度"],
+  "randomCountries": ["美国", "台湾", "德国", "英国", "加拿大", "澳大利亚", "法国", "印度"],
   "facebookTestUrl": "https://www.instagram.com",
   "mediaTestUrl": "https://www.youtube.com",
   "telegramTestUrl": "https://core.telegram.org",
