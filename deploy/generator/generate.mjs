@@ -87,19 +87,22 @@ async function fetchText(url, tries = 2, timeoutMs = 20000) {
 }
 
 async function fetchRules() {
+  // raw 优先（无缓存、必为最新）；jsDelivr @main 对"修改过的文件"缓存滞后，
+  // 会拉到旧规则（如 direct.list 残留 dl/mtalk.google.com 直连）。
+  // 仅当 raw 不可达时回退 CDN（保留 process.list 曾只走 raw 失败的教训）。
   const raw = `https://raw.githubusercontent.com/${CFG.rulesRepo}/${CFG.branch}/rules/`;
   const cdn = `https://cdn.jsdelivr.net/gh/${CFG.rulesRepo}@${CFG.branch}/rules/`;
   const out = {};
   for (const [name] of RULE_ORDER) {
     let text = null;
-    try { text = await fetchText(cdn + name + '.list'); } catch { /* 尝试 raw */ }
-    if (text == null) text = await fetchText(raw + name + '.list');
+    try { text = await fetchText(raw + name + '.list'); } catch { /* 尝试 CDN 兜底 */ }
+    if (text == null) text = await fetchText(cdn + name + '.list');
     out[name] = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
   }
   try {
     let text = null;
-    try { text = await fetchText(cdn + 'process.list'); } catch { /* 尝试 raw */ }
-    if (text == null) text = await fetchText(raw + 'process.list');
+    try { text = await fetchText(raw + 'process.list'); } catch { /* 尝试 CDN 兜底 */ }
+    if (text == null) text = await fetchText(cdn + 'process.list');
     out.process = text.split(/\r?\n/).map((l) => l.trim()).filter((l) => l && !l.startsWith('#'));
   }
   catch { out.process = []; }
