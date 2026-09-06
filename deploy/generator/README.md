@@ -41,12 +41,13 @@ NAS 容器（clash-subgen）
   "pushRepo": "git@github.com:archzhjam/clash-configs.git",
   "pushBranch": "main",
   "groupFilters": {
-    "emby": ["日本", { "include": ["美国"], "exclude": ["Gemini"] }]
+    "emby": ["日本", { "include": ["美国"], "exclude": ["Gemini"] }],
+    "google": { "include": ["美国"], "exclude": ["低延迟游戏加速"] }
   }
 }
 ```
 
-> `groupFilters`：值为字符串=名称包含即入组；对象=`include` 全含 + `exclude` 全不含；**数组=多个筛选条件取并集**（如 Emby 组同时收录「日本」与「美国非 Gemini」节点）。缺省时 emby 默认 `["日本", {"include":["美国"],"exclude":["Gemini"]}]`。
+> `groupFilters`：值为字符串=名称包含即入组；对象=`include` 全含 + `exclude` 全不含；**数组=多个筛选条件取并集**（如 Emby 组同时收录「日本」与「美国非 Gemini」节点）。缺省时 emby 默认 `["日本", {"include":["美国"],"exclude":["Gemini"]}]`，google（📱 Google框架）默认 `{"include":["美国"],"exclude":["低延迟游戏加速"]}`（美国 A01–A15，不含 5M 限速游戏节点）。
 
 ## 本地测试（无需容器）
 

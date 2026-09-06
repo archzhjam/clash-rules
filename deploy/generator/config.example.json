@@ -14,7 +14,8 @@
     "telegram": "香港",
     "tiktok": { "include": ["美国"], "exclude": ["Gemini"] },
     "llm": { "include": ["美国", "Gemini"] },
-    "emby": ["日本", { "include": ["美国"], "exclude": ["Gemini"] }]
+    "emby": ["日本", { "include": ["美国"], "exclude": ["Gemini"] }],
+    "google": { "include": ["美国"], "exclude": ["低延迟游戏加速"] }
   },
   "randomCountries": ["美国", "台湾", "德国", "英国", "加拿大", "澳大利亚", "法国", "印度"],
   "facebookTestUrl": "https://www.instagram.com",

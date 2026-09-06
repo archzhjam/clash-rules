@@ -1,0 +1,18 @@
+# 📱 Google框架 —— Android GMS/Play 全家桶流量，固定走美国节点（📱 Google框架 组）
+# 优先级：必须排在 llm.list（DOMAIN-KEYWORD,Google）和 direct.list 之前，
+#          否则会被关键字规则吞掉、或被旧直连规则放行（曾把 dl.google.com/mtalk.google.com
+#          放直连 → Play 登录卡"核对信息"、与 Google 服务器通信报错，现已从 direct.list 移除）。
+# Google 服务全域走代理：google.com / googleapis.com / gstatic.com 等后缀统一覆盖，
+# 漏网但仍含 "google" 字样的域名由 llm.list 的关键字兜住（同样走美国节点池）。
+DOMAIN-SUFFIX,google.com
+DOMAIN-SUFFIX,googleapis.com
+DOMAIN-SUFFIX,gstatic.com
+DOMAIN-SUFFIX,googleusercontent.com
+DOMAIN-SUFFIX,ggpht.com
+DOMAIN-SUFFIX,gvt1.com
+DOMAIN-SUFFIX,gvt2.com
+DOMAIN-SUFFIX,gvt3.com
+DOMAIN-SUFFIX,android.com
+DOMAIN-SUFFIX,googlesource.com
+DOMAIN-SUFFIX,googlecode.com
+DOMAIN-SUFFIX,1e100.net

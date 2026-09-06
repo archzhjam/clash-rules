@@ -76,12 +76,10 @@ DST-PORT,9999
 DOMAIN,analytics.strava.com
 DOMAIN,app.adjust.com
 DOMAIN,blzddist1-a.akamaihd.net
-DOMAIN,dl.google.com
 DOMAIN,download.jetbrains.com
 DOMAIN,images-cn.ssl-images-amazon.com
 DOMAIN,msg.umeng.com
 DOMAIN,msg.umengcloud.com
-DOMAIN,mtalk.google.com
 DOMAIN,officecdn-microsoft-com.akamaized.net
 DOMAIN,speedtest.macpaw.com
 DOMAIN,www-cdn.icloud.com.akadns.net

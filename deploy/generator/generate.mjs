@@ -42,6 +42,9 @@ const TG_TEST_URL = CFG.telegramTestUrl || 'https://core.telegram.org';
 const TG_INTERVAL = CFG.telegramInterval || 86400;
 // Emby 组默认节点池：日本 + 美国非 Gemini（config.json 的 groupFilters.emby 可覆盖；数组=多条件并集）
 const EMBY_DEFAULT_FILTER = ['日本', { include: ['美国'], exclude: ['Gemini'] }];
+// 📱 Google框架 组默认节点池：美国 A01–A15（同 Gemini 池，不含 5M 限速游戏加速节点；
+// config.json 的 groupFilters.google 可覆盖）
+const GOOGLE_DEFAULT_FILTER = { include: ['美国'], exclude: ['低延迟游戏加速'] };
 // 🎲Random 轮换国家池（javdb 每日轮换出口规避 7 天 IP 封禁；可按实测可用性增删）
 const RANDOM_COUNTRIES = (CFG.randomCountries && CFG.randomCountries.length ? CFG.randomCountries : ['美国', '台湾', '德国', '英国', '加拿大', '澳大利亚', '法国', '印度']);
 // 轮换日界：北京时间 03:00 切换新国家（NAS 03:30 cron 触发重生成发布）
@@ -53,6 +56,9 @@ function randomCountry() {
 
 const RULE_ORDER = [
   ['netflix', '🎥 Netflix'],
+  // 📱 Google框架 必须排在 llm（DOMAIN-KEYWORD,Google）与 direct 之前：
+  // 避免 Google 域名先被关键字规则吞掉或被旧直连规则（dl/mtalk.google.com）放行
+  ['google', '📱 Google框架'],
   ['llm', '🤖 大模型'],
   ['direct', '🎯 Direct'],
   ['microsoft', '🎯 Direct'],
@@ -210,7 +216,7 @@ async function fetchV2rayNodes() {
 }
 
 /** 输出 YAML 策略组定义 */
-function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames) {
+function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames, googleNames) {
   const select = (name, members) => `  - name: ${name}\n    type: select\n    proxies: [${members.join(', ')}]`;
   const urlTest = (name, members, url = TEST_URL, interval = 300) =>
     `  - name: ${name}\n    type: url-test\n    url: ${url}\n    interval: ${interval}\n    proxies: [${members.join(', ')}]`;
@@ -230,6 +236,7 @@ function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usN
   const randomMembers = filterNames(names, todayCountry);
   L.push(urlTest('🎲 Random', randomMembers.length ? randomMembers : names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : names));
+  L.push(urlTest('📱 Google框架', googleNames.length ? googleNames : names));
   L.push(select('🍎 Apple', ['🎯 Direct', '🚀 节点选择']));
   L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : names, TG_TEST_URL, TG_INTERVAL));
   L.push(urlTest('🎵 tiktok', usNonGeminiNames.length ? usNonGeminiNames : names));
@@ -237,7 +244,7 @@ function buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usN
   return L.join('\n');
 }
 
-function buildClash(nodes, names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames, rules) {
+function buildClash(nodes, names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames, googleNames, rules) {
   const L = [];
   L.push('mixed-port: 7890');
   L.push('allow-lan: true');
@@ -273,7 +280,7 @@ function buildClash(nodes, names, hkNames, mediaNames, taiwanNames, usGeminiName
   L.push('proxies:');
   L.push(nodes);
   L.push('proxy-groups:');
-  L.push(buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames));
+  L.push(buildGroups(names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames, googleNames));
   L.push('rules:');
   for (const [key, policy] of RULE_ORDER) for (const r of rules[key]) L.push(`  - ${inlineRule(r, policy)}`);
   for (const r of rules.process || []) L.push(`  - ${inlineRule(r, '🎯 Direct')}`);
@@ -292,6 +299,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   const fbNames = filterNames(v2names, filters.facebook);
   const tgNames = filterNames(v2names, filters.telegram);
   const embyNames = filterNames(v2names, filters.emby || EMBY_DEFAULT_FILTER);
+  const googleNames = filterNames(v2names, filters.google || GOOGLE_DEFAULT_FILTER);
   const L = [];
   L.push('[General]');
   L.push('dns-server = 223.5.5.5, 119.29.29.29');
@@ -316,6 +324,7 @@ function buildShadowrocket(v2nodes, rules, filters) {
   const randomMembers = filterNames(v2names, todayCountry);
   L.push(urlTest('🎲 Random', randomMembers.length ? randomMembers : v2names));
   L.push(urlTest('🤖 大模型', usGeminiNames.length ? usGeminiNames : v2names));
+  L.push(urlTest('📱 Google框架', googleNames.length ? googleNames : v2names));
   L.push(sel('🍎 Apple', ['🎯 Direct', '🚀 节点选择']));
   L.push(urlTest('📲 Telegram', tgNames.length ? tgNames : v2names, TG_TEST_URL, TG_INTERVAL));
   L.push(urlTest('🎵 tiktok', usNonGeminiNames.length ? usNonGeminiNames : v2names));
@@ -382,7 +391,8 @@ async function main() {
   const fbNames = filterNames(names, FILTERS.facebook);
   const tgNames = filterNames(names, FILTERS.telegram);
   const embyNames = filterNames(names, FILTERS.emby || EMBY_DEFAULT_FILTER);
-  console.log(`      节点选择: ${hkNames.length} | 媒体: ${mediaNames.length} | 台湾(Netflix): ${taiwanNames.length} | 美Gemini(大模型): ${usGeminiNames.length} | 美非Gemini(tiktok): ${usNonGeminiNames.length} | Facebook: ${fbNames.length} | Telegram: ${tgNames.length} | Emby: ${embyNames.length} | Random轮换: ${RANDOM_COUNTRIES.length}国`);
+  const googleNames = filterNames(names, FILTERS.google || GOOGLE_DEFAULT_FILTER);
+  console.log(`      节点选择: ${hkNames.length} | 媒体: ${mediaNames.length} | 台湾(Netflix): ${taiwanNames.length} | 美Gemini(大模型): ${usGeminiNames.length} | 美非Gemini(tiktok): ${usNonGeminiNames.length} | Facebook: ${fbNames.length} | Telegram: ${tgNames.length} | Emby: ${embyNames.length} | Google框架: ${googleNames.length} | Random轮换: ${RANDOM_COUNTRIES.length}国`);
   console.log('[1b/4] 拉取 v2ray URI 订阅（Shadowrocket 原生格式）...');
   let v2nodes = await fetchV2rayNodes();
   const srFilter = CFG.shadowrocketNodeFilter;
@@ -392,7 +402,7 @@ async function main() {
   const rules = await fetchRules();
   console.log(`      规则数: ${RULE_ORDER.reduce((s, [k]) => s + rules[k].length, 0) + (rules.process || []).length}`);
   console.log('[3/4] 生成配置...');
-  writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames, rules), 'utf8');
+  writeFileSync(path.join(OUT, 'clash.yaml'), buildClash(block, names, hkNames, mediaNames, taiwanNames, usGeminiNames, usNonGeminiNames, fbNames, tgNames, embyNames, googleNames, rules), 'utf8');
   writeFileSync(path.join(OUT, 'shadowrocket.conf'), buildShadowrocket(v2nodes, rules, FILTERS), 'utf8');
   console.log('[4/4] 完成：');
   for (const f of readdirSync(OUT)) {

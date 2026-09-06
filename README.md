@@ -10,6 +10,7 @@
 clash-rules/
 ├── rules/                     # 共享规则集（.list 纯文本，不含策略）
 │   ├── netflix.list           # 🎥 Netflix（33 条）
+│   ├── google.list            # 📱 Google框架（12 条，GMS/Play 全家桶，固定美国 A01–A15 组）
 │   ├── llm.list               # 🤖 大模型（12 条，openai/chatgpt/gemini 等）
 │   ├── direct.list            # 🎯 Direct（266 条）
 │   ├── microsoft.list         # Ⓜ️ Microsoft（79 条，直连 🎯 Direct）
@@ -33,7 +34,7 @@ clash-rules/
 
 | 规则集 | 数量 | 兼容性 |
 |---|---|---|
-| netflix / llm / direct / microsoft / apple / telegram / bilibili / facebook / media / tiktok / emby / emby-us / block | 1062 | ✅ 全平台（DOMAIN/SUFFIX/KEYWORD/IP-CIDR/DST-PORT） |
+| netflix / google / llm / direct / microsoft / apple / telegram / bilibili / facebook / media / tiktok / emby / emby-us / block | 1072 | ✅ 全平台（DOMAIN/SUFFIX/KEYWORD/IP-CIDR/DST-PORT） |
 | process.list | 16 | ⚠️ 仅 Clash 桌面端（PROCESS-NAME 路由器/手机不适用） |
 
 **基础规则**（各端配置里直接写，不进规则集）：
@@ -44,7 +45,9 @@ clash-rules/
 ```
 
 **规则优先级**：规则集引用顺序保持与原文件一致（否则匹配结果会变）：
-`netflix → llm → direct → microsoft → apple → telegram → bilibili → facebook → media → tiktok → emby → emby-us → block → GEOIP,CN → GEOSITE,CN → MATCH`
+`netflix → google → llm → direct → microsoft → apple → telegram → bilibili → facebook → media → tiktok → emby → emby-us → block → GEOIP,CN → GEOSITE,CN → MATCH`
+
+> 📱 Google框架（google.list）必须排在 llm 之前：llm 里有 `DOMAIN-KEYWORD,Google`，且旧直连规则曾含 `dl.google.com`/`mtalk.google.com`（GMS 心跳），直连会导致 Play 登录卡"核对信息"、报"与 Google 服务器通信出现问题"。
 
 ## 各端接入
 
@@ -52,7 +55,7 @@ clash-rules/
 
 - 在订阅上启用 **Merge 配置**，内容见 [`base/verge-merge.yaml`](base/verge-merge.yaml)（含 rule-providers + rules 引用）；
 - `process.list` 额外引用（`RULE-SET,process,🎯 Direct`）——桌面端独有；
-- 需在订阅配置中定义同名策略组：🛑 Block、🎯 Direct、🌍 主流媒体、Ⓜ️ Microsoft、📺 BiliBili、🎥 Netflix、💙 Facebook、🤖 大模型、🍎 Apple、📲 Telegram、🎵 tiktok、🎬 Emby、🎲 Random、🐟 漏网之鱼。
+- 需在订阅配置中定义同名策略组：🛑 Block、🎯 Direct、🌍 主流媒体、Ⓜ️ Microsoft、📺 BiliBili、🎥 Netflix、💙 Facebook、📱 Google框架、🤖 大模型、🍎 Apple、📲 Telegram、🎵 tiktok、🎬 Emby、🎲 Random、🐟 漏网之鱼。
 
 ### 2) OpenClash（OpenWrt 软路由）
 
@@ -65,6 +68,7 @@ clash-rules/
 - 设置 → 规则 → **添加规则集**，逐个填入以下 URL（raw 链接，替换为你的仓库地址）：
   ```
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/netflix.list
+  https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/google.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/llm.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/direct.list
   https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/microsoft.list

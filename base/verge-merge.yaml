@@ -6,6 +6,7 @@
 prepend-rules:
   # 共享规则集引用（顺序与原文件一致）
   - RULE-SET,netflix,🎥 Netflix
+  - RULE-SET,google,📱 Google框架
   - RULE-SET,llm,🤖 大模型
   - RULE-SET,direct,🎯 Direct
   - RULE-SET,microsoft,🎯 Direct
@@ -25,6 +26,7 @@ prepend-rules:
 
 prepend-rule-providers:
   netflix: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/netflix.list", path: ./rules/netflix.yaml, interval: 86400}
+  google: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/google.list", path: ./rules/google.yaml, interval: 86400}
   llm: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/llm.list", path: ./rules/llm.yaml, interval: 86400}
   direct: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/direct.list", path: ./rules/direct.yaml, interval: 86400}
   microsoft: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/microsoft.list", path: ./rules/microsoft.yaml, interval: 86400}
