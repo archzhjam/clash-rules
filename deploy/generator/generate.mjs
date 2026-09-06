@@ -339,14 +339,31 @@ function inlineRule(rule, policy, keepNoResolve = true) {
 
 function startServer() {
   const mime = { '.yaml': 'text/yaml', '.conf': 'text/plain', '.list': 'text/plain' };
+  // 仅允许提供生成产物白名单，杜绝目录/路径穿越导致 EISDIR 崩溃
+  const ALLOWED = new Set(['clash.yaml', 'shadowrocket.conf']);
   http.createServer((req, res) => {
-    const p = path.join(OUT, path.basename(req.url.split('?')[0]));
-    if (existsSync(p)) {
+    try {
+      const name = path.basename(req.url.split('?')[0]);
+      if (!ALLOWED.has(name)) {           // 非白名单一律 404（含目录路径 /clash/ 等）
+        res.writeHead(404);
+        res.end('not found: ' + name);
+        return;
+      }
+      const p = path.join(OUT, name);
+      const st = statSync(p);             // 确认是文件而非目录
+      if (!st.isFile()) {
+        res.writeHead(404);
+        res.end('not found: ' + name);
+        return;
+      }
       res.writeHead(200, { 'Content-Type': mime[path.extname(p)] || 'text/plain' });
       res.end(readFileSync(p));
-    } else {
-      res.writeHead(404);
-      res.end('not found: ' + path.basename(req.url));
+    } catch (e) {                         // 任何异常都不让进程崩溃
+      try {
+        if (!res.headersSent) { res.writeHead(500); res.end('internal error'); }
+        else { res.end(); }
+      } catch { /* 连接已断开则忽略 */ }
+      console.error('[serve] error:', e.message);
     }
   }).listen(PORT, '0.0.0.0', () => console.log(`[serve] http://0.0.0.0:${PORT}/ (clash.yaml / shadowrocket.conf)`));
 }
