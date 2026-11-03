@@ -40,3 +40,11 @@ prepend-rule-providers:
   emby-us: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/emby-us.list", path: ./rules/emby-us.yaml, interval: 86400}
   block: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/block.list", path: ./rules/block.yaml, interval: 86400}
   process: {type: http, behavior: classical, url: "https://raw.githubusercontent.com/archzhjam/clash-rules/main/rules/process.list", path: ./rules/process.yaml, interval: 86400}
+
+# DNS：*.ts.net（Tailscale MagicDNS 私有域名）用系统解析器解析。
+# 否则 fake-ip + 公共 DNS(223.5.5.5/DoH) 解析不到 ts.net → 即使 Direct 规则命中，
+# 域名也无法解析成 100.64.x.x 真实 IP，走代理 SSL 秒失败（系统代理开着时）。
+# 配合规则集里的 DOMAIN-SUFFIX,ts.net → Direct 使用；system = 系统 DNS（即 Tailscale MagicDNS）。
+dns:
+  nameserver-policy:
+    "ts.net": system
