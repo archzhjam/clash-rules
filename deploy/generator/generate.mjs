@@ -280,6 +280,11 @@ function buildClash(nodes, names, hkNames, mediaNames, taiwanNames, usGeminiName
   L.push('  proxy-server-nameserver:');
   L.push('    - 223.5.5.5');
   L.push('    - 119.29.29.29');
+  // Tailscale MagicDNS：*.ts.net 是私有域名，公共 DNS 解析不到；
+  // 必须走 100.100.100.100（tailscale 设备的 MagicDNS），否则系统代理下无法访问
+  L.push('  nameserver-policy:');
+  L.push('    "+.ts.net": 100.100.100.100');
+  L.push('    "ts.net": 100.100.100.100');
   L.push('proxies:');
   L.push(nodes);
   L.push('proxy-groups:');
