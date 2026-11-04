@@ -44,7 +44,9 @@ prepend-rule-providers:
 # DNS：*.ts.net（Tailscale MagicDNS 私有域名）用系统解析器解析。
 # 否则 fake-ip + 公共 DNS(223.5.5.5/DoH) 解析不到 ts.net → 即使 Direct 规则命中，
 # 域名也无法解析成 100.64.x.x 真实 IP，走代理 SSL 秒失败（系统代理开着时）。
-# 配合规则集里的 DOMAIN-SUFFIX,ts.net → Direct 使用；system = 系统 DNS（即 Tailscale MagicDNS）。
+# 配合规则集里的 DOMAIN-SUFFIX,ts.net → Direct 使用；100.100.100.100 = Tailscale MagicDNS。
+# 注意：mihomo 裸键为精确匹配（匹配不到子域名）；macOS 上 system 解析器读不到 MagicDNS，须显式用 100.100.100.100。
 dns:
   nameserver-policy:
-    "ts.net": system
+    "+.ts.net": 100.100.100.100
+    "ts.net": 100.100.100.100
