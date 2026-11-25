@@ -17,22 +17,22 @@ push_to_github() {
     git commit -m "update $(date '+%F %T')" -q || true
   fi
 
-  # 先同步远端再推送，避免历史分叉导致非快进被拒。
-  # 旧版用 `|| true` 吞掉推送错误并照打“已推送”，曾静默失联 3 周。
-  if GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/id_ed25519" git fetch -q origin main 2>/dev/null; then
-    if ! GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/id_ed25519" git rebase -q origin/main 2>/dev/null; then
-      git rebase --abort 2>/dev/null || true
-      echo "[push] 检测到历史分叉，重置到 origin/main 后重新生成"
-      git reset -q --hard origin/main || true
-      node /app/generate.mjs --out /app/output || true
-      git add -A
-      if ! git diff --cached --quiet; then
-        git commit -m "update $(date '+%F %T')" -q || true
-      fi
-    fi
-  else
+  # 先 fetch 远端；失败则本次不推送（本地提交保留）
+  if ! GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/id_ed25519" git fetch -q origin main 2>/dev/null; then
     echo "[push] WARN: git fetch 失败，跳过本次推送（本地提交保留）"
     return 0
+  fi
+
+  # 本地历史未包含 origin/main（历史分叉）→ 重置到远端，按当前生成产物重新提交。
+  # 不用 rebase：会把远端手工提交与本地生成内容合并，产生重复规则/脏产物。
+  if ! git merge-base --is-ancestor origin/main HEAD 2>/dev/null; then
+    echo "[push] 检测到历史分叉，重置到 origin/main 后按当前产物重新提交"
+    git reset -q --hard origin/main || true
+    node /app/generate.mjs --out /app/output || true
+    git add -A
+    if ! git diff --cached --quiet; then
+      git commit -m "update $(date '+%F %T')" -q || true
+    fi
   fi
 
   if git diff --quiet origin/main HEAD 2>/dev/null; then
