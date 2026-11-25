@@ -13,11 +13,9 @@ push_to_github() {
   git remote remove origin 2>/dev/null || true
   git remote add origin "${PUSH_REPO:-git@github.com:archzhjam/clash-configs.git}" 2>/dev/null || true
   git add -A
-  if git diff --cached --quiet; then
-    echo "[push] 无变化，跳过"
-    return 0
+  if ! git diff --cached --quiet; then
+    git commit -m "update $(date '+%F %T')" -q || true
   fi
-  git commit -m "update $(date '+%F %T')" -q || true
 
   # 先同步远端再推送，避免历史分叉导致非快进被拒。
   # 旧版用 `|| true` 吞掉推送错误并照打“已推送”，曾静默失联 3 周。
@@ -34,6 +32,11 @@ push_to_github() {
     fi
   else
     echo "[push] WARN: git fetch 失败，跳过本次推送（本地提交保留）"
+    return 0
+  fi
+
+  if git diff --quiet origin/main HEAD 2>/dev/null; then
+    echo "[push] 与远端一致，跳过"
     return 0
   fi
 
