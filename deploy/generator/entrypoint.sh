@@ -15,11 +15,34 @@ push_to_github() {
   git add -A
   if git diff --cached --quiet; then
     echo "[push] 无变化，跳过"
+    return 0
+  fi
+  git commit -m "update $(date '+%F %T')" -q || true
+
+  # 先同步远端再推送，避免历史分叉导致非快进被拒。
+  # 旧版用 `|| true` 吞掉推送错误并照打“已推送”，曾静默失联 3 周。
+  if GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/id_ed25519" git fetch -q origin main 2>/dev/null; then
+    if ! GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/id_ed25519" git rebase -q origin/main 2>/dev/null; then
+      git rebase --abort 2>/dev/null || true
+      echo "[push] 检测到历史分叉，重置到 origin/main 后重新生成"
+      git reset -q --hard origin/main || true
+      node /app/generate.mjs --out /app/output || true
+      git add -A
+      if ! git diff --cached --quiet; then
+        git commit -m "update $(date '+%F %T')" -q || true
+      fi
+    fi
   else
-    git commit -m "update $(date '+%F %T')" -q
-    GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/id_ed25519" git push -q origin HEAD:main || \
-      GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/router_ed25519" git push -q origin HEAD:main || true
-    echo "[push] 已推送"
+    echo "[push] WARN: git fetch 失败，跳过本次推送（本地提交保留）"
+    return 0
+  fi
+
+  if GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/id_ed25519" git push -q origin HEAD:main; then
+    echo "[push] 已推送 $(git rev-parse --short HEAD)"
+  elif GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new -i /root/.ssh/router_ed25519" git push -q origin HEAD:main; then
+    echo "[push] 已推送(备用密钥) $(git rev-parse --short HEAD)"
+  else
+    echo "[push] FAILED：本次提交未推送（本地已保留），请检查 SSH/网络/远端保护"
   fi
 }
 
